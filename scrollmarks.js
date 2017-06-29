@@ -200,7 +200,7 @@
 			mark.callback(mark.element, direction)
 			// delete onetime marks
 			if (mark.once) {
-				scrollMarks.delete(mark.key);
+				remove(mark.key);
 			}
 		});
 		// empty queue
