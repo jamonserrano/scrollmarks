@@ -180,8 +180,8 @@
 	 * Trigger scrollmarks
 	 */
 	function triggerQueue () {
-		// trigger marks in order
-		queue.sort((a,b) => direction === 'down' ? a - b : b - a);
+		queue.sort((a,b) => direction === 'down' ? a.triggerPoint - b.triggerPoint : b.triggerPoint - a.triggerPoint);
+		// call each mark
 		queue.forEach((mark) => {
 			mark.callback(mark.element, direction)
 			if (mark.once) {
