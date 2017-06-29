@@ -134,8 +134,11 @@
 			return;
 		}
 		started = false;
+		// scroll
 		window.removeEventListener('scroll', onScroll, listenerProperties);
+		// resize
 		window.removeEventListener('resize', onResize, listenerProperties);
+		// document height
 		window.cancelAnimationFrame(heightChecker);
 	}
 
@@ -156,13 +159,16 @@
 	 * Checks if scrollmarks should be triggered
 	 */
 	function checkMarks () {
+		// get scroll position and direction
 		const currentScroll = window.pageYOffset;
 		direction = previousScroll < currentScroll ? 'down' : 'up';
+		
 		scrollMarks.forEach((mark) => {
 			const markDirection = mark.direction;
 			// 1st check: element is visible and direction matches (or undefined)
 			if (mark.element.offsetParent !== null && (!markDirection || markDirection === direction)) {
 				const triggerPoint = mark.triggerPoint;
+				// blatant ripoff of Waypoints https://github.com/imakewebthings/waypoints
 				const wasBefore = previousScroll < triggerPoint;
 				const isAfter = triggerPoint <= currentScroll;
 				// 2nd check: element actually crossed the mark
@@ -172,7 +178,9 @@
 				}
 			}
 		});
+		// trigger affected marks
 		triggerQueue();
+		// prepare for next run
 		previousScroll = currentScroll;
 	}
 
@@ -180,20 +188,24 @@
 	 * Trigger scrollmarks
 	 */
 	function triggerQueue () {
+		// put trigger marks in order
 		queue.sort((a,b) => direction === 'down' ? a.triggerPoint - b.triggerPoint : b.triggerPoint - a.triggerPoint);
 		// call each mark
 		queue.forEach((mark) => {
+			// TODO do we need binding?
 			mark.callback(mark.element, direction)
+			// delete transient marks
 			if (mark.once) {
 				scrollMarks.delete(mark.key);
 			}
 		});
-		// reset queue
+		// empty queue
 		queue = [];
 	}
 
 	/**
 	 * Set the resized flag
+	 * TODO throttle
 	 */
 	function onResize () {
 		resized = true;
@@ -205,19 +217,24 @@
 	 */
 	function checkDocumentHeight () {
 		if (resizeTick === resizeThrottle) {
+			// time to check the height
 			const height = documentElement.offsetHeight;
 			if (previousHeight !== height) {
 				updateTriggerPoints();
 				previousHeight = height;
 			}
+			// reset the ticker
 			resizeTick = 0;
 		} else if (resized) {
+			// document was resized
 			updateTriggerPoints();
 			resized = false;
+			// reset the ticker anyway to win some time until the next call
 			resizeTick = 0;
 		} else {
 			resizeTick++;
 		}
+
 		heightChecker = window.requestAnimationFrame(checkDocumentHeight);
 	}
 
