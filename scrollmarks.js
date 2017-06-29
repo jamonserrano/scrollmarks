@@ -165,14 +165,12 @@
 		
 		scrollMarks.forEach((mark) => {
 			const markDirection = mark.direction;
-			// 1st check: element is visible and direction matches (or undefined)
+			// 1st check: element is visible and direction matches (or not defined)
 			if (mark.element.offsetParent !== null && (!markDirection || markDirection === direction)) {
 				const triggerPoint = mark.triggerPoint;
-				// blatant ripoff of Waypoints https://github.com/imakewebthings/waypoints
-				const wasBefore = previousScroll < triggerPoint;
-				const isAfter = triggerPoint <= currentScroll;
-				// 2nd check: element actually crossed the mark
-				if (wasBefore === isAfter) {
+				// 2nd check: element actually crossed the mark (below -> above or above -> below)
+				// from https://github.com/imakewebthings/waypoints
+				if ((previousScroll < triggerPoint) === (triggerPoint <= currentScroll)) {
 					// mark should be triggered
 					queue.push(mark);
 				}
