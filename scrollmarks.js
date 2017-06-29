@@ -59,12 +59,32 @@
 	 * @return {Number} index
 	 */
 	function add (params) {
-		// todo validate params
-		// element, callback, once, direction
+		const { element, callback, offset, direction, once } = params;
+		// validate params
+		if (!(element instanceof HTMLElement)) {
+			throw new TypeError(`Parameter 'element' must be an HTML Element, got ${element} instead`);
+		}
+		if (typeof callback !== 'function') {
+			throw new TypeError(`Parameter 'callback' must be a function, got ${callback} instead`);
+		}
+		if (typeof offset === 'undefined') {
+			params.offset = 0;
+		} else if (Number.isNaN(offset) && typeof offset !== 'function') {
+			throw new TypeError(`Optional parameter 'offset' must be a number or a function, got ${offset} instead`);
+		}
+		if (direction && direction !== 'up' && direction !== 'down') {
+			throw new TypeError(`Optional parameter 'direction' must be either 'up' or 'down', got ${direction} instead`);
+		}
+		if (typeof once !== 'undefined' && typeof once !== 'boolean') {
+			throw new TypeError(`Optional parameter 'once' must be true or false, got ${once} instead`);
+		}
+		
+		params.triggerPoint = typeof offset === 'function' ? offset(element) : element.offsetTop - offset;
 		const key = index++;
-		params.triggerPoint = typeof offset === 'function' ? params.offset(params.element) : params.element.offsetTop - params.offset;
 		params.key = key;
+		
 		scrollMarks.set(key, params);
+		
 		if (!started) {
 			start();
 		}
@@ -200,16 +220,6 @@
 	}
 
 	/**
-	 * FOR DEBUGGING
-	 * Get a scrollmark by index
-	 * @param {Number} index
-	 * @return {Object} scrollmark
-	 */
-	function get(index) {
-		return scrollMarks.get(index);
-	}
-
-	/**
 	 * Set options
 	 * @param {Object} options 
 	 */
@@ -217,5 +227,5 @@
 		scrollThrottle = options.throttle;
 	}
 
-	return {add, remove, start, stop, get, config};
+	return {add, remove, start, stop, config};
 }));
