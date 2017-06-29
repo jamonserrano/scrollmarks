@@ -257,6 +257,14 @@
 			mark.element.offsetTop - mark.offset;
 	}
 
+	function refresh(key) {
+		if (typeof key !== 'undefined' && scrollMarks.has(key)) {
+			calculateTriggerPoint(scrollMarks.get(key));
+		} else {
+			updateTriggerPoints();
+		}
+	}
+
 	/**
 	 * Set options
 	 * @param {Object} options 
@@ -266,5 +274,5 @@
 		resizeThrottle = options.resizeThrottle;
 	}
 
-	return {add, remove, start, stop, config};
+	return {add, remove, start, stop, config, refresh};
 }));
