@@ -34,17 +34,12 @@
 	let previousScroll = 0;
 	// previous document height
 	let previousHeight = documentElement.offsetHeight;
-	// listener for scroll events
-	let scrollListener;
-	// listener for resize events
-	let resizeListener;
 	// listener for document height changes
 	let heightChecker;
 	// scroll direction
 	let direction;
 	// queue for triggered marks
 	let queue = [];
-	// let scrolled = false;
 	// document was resized
 	let resized = false;
 	// event listener properties (false by default)
@@ -92,9 +87,12 @@
 	 * Start listening
 	 */
 	function start () {
+		if (started) {
+			return;
+		}
 		started = true;
-		scrollListener = window.addEventListener('scroll', onScroll, listenerProperties);
-		resizeListener = window.addEventListener('resize', onResize, listenerProperties);
+		window.addEventListener('scroll', onScroll, listenerProperties);
+		window.addEventListener('resize', onResize, listenerProperties);
 		heightChecker = window.requestAnimationFrame(checkDocumentHeight);
 		checkMarks();
 	}
@@ -103,10 +101,12 @@
 	 * Stop listening
 	 */
 	function stop () {
+		if (!started) {
+			return;
+		}
 		started = false;
-		// todo stop listening
-		window.removeEventListener('scroll', scrollListener);
-		window.removeEventListener('resize', resizeListener);
+		window.removeEventListener('scroll', onScroll, listenerProperties);
+		window.removeEventListener('resize', onResize, listenerProperties);
 		window.cancelAnimationFrame(heightChecker);
 	}
 
@@ -201,7 +201,7 @@
 
 	/**
 	 * FOR DEBUGGING
-	 * Get a scrollmark my index
+	 * Get a scrollmark by index
 	 * @param {Number} index
 	 * @return {Object} scrollmark
 	 */
