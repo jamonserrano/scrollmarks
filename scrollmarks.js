@@ -243,7 +243,8 @@
 	 * @param {Object} options 
 	 */
 	function config (options) {
-		scrollThrottle = options.throttle;
+		scrollThrottle = options.scrollThrottle;
+		resizeThrottle = options.resizeThrottle;
 	}
 
 	return {add, remove, start, stop, config};
