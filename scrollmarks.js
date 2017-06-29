@@ -55,11 +55,11 @@
 
 	/**
 	 * Add a new scrollmark
-	 * @param {Object} params 
+	 * @param {Object} mark
 	 * @return {Number} index
 	 */
-	function add (params) {
-		const { element, callback, offset, direction, once } = params;
+	function add (mark) {
+		const { element, callback, offset, direction, once } = mark;
 		// validate params
 		if (!(element instanceof HTMLElement)) {
 			throw new TypeError(`Parameter 'element' must be an HTML Element, got ${element} instead`);
@@ -68,7 +68,7 @@
 			throw new TypeError(`Parameter 'callback' must be a function, got ${callback} instead`);
 		}
 		if (typeof offset === 'undefined') {
-			params.offset = 0;
+			mark.offset = 0;
 		} else if (Number.isNaN(offset) && typeof offset !== 'function') {
 			throw new TypeError(`Optional parameter 'offset' must be a number or a function, got ${offset} instead`);
 		}
@@ -78,17 +78,22 @@
 		if (typeof once !== 'undefined' && typeof once !== 'boolean') {
 			throw new TypeError(`Optional parameter 'once' must be true or false, got ${once} instead`);
 		}
+
+		// add triggerpoint
+		calculateTriggerPoint(mark);
 		
-		params.triggerPoint = typeof offset === 'function' ? offset(element) : element.offsetTop - offset;
+		// generate key
 		const key = index++;
-		params.key = key;
+		mark.key = key;		
 		
-		scrollMarks.set(key, params);
+		// add scrollmark to list
+		scrollMarks.set(key, mark);
 		
+		// start listening
 		if (!started) {
 			start();
 		}
-		// todo trigger if already passed?
+		// TODO trigger if already passed?
 		return key;
 	}
 
@@ -111,9 +116,13 @@
 			return;
 		}
 		started = true;
+		// scroll
 		window.addEventListener('scroll', onScroll, listenerProperties);
+		// resize
 		window.addEventListener('resize', onResize, listenerProperties);
+		// document height
 		heightChecker = window.requestAnimationFrame(checkDocumentHeight);
+		// the document can already be scrolled so run a check
 		checkMarks();
 	}
 
@@ -132,7 +141,7 @@
 
 	/**
 	 * Scroll event listener
-	 * Calls rAF on every nth event
+	 * Calls rAF on every nth event (or nth frame in Chrome and FF)
 	 */
 	function onScroll () {
 		if (scrollTick === scrollThrottle) {
@@ -198,12 +207,12 @@
 		if (resizeTick === resizeThrottle) {
 			const height = documentElement.offsetHeight;
 			if (previousHeight !== height) {
-				updateOffsets();
+				updateTriggerPoints();
 				previousHeight = height;
 			}
 			resizeTick = 0;
 		} else if (resized) {
-			updateOffsets();
+			updateTriggerPoints();
 			resized = false;
 			resizeTick = 0;
 		} else {
@@ -213,17 +222,27 @@
 	}
 
 	/**
-	 * Update all offsets
+	 * Update all trigger points
 	 */
-	function updateOffsets () {
-		scrollMarks.forEach((mark) => mark.triggerPoint = typeof offset === 'function' ? mark.offset(mark.element) : mark.element.offsetTop - mark.offset);
+	function updateTriggerPoints () {
+		scrollMarks.forEach(calculateTriggerPoint);
+	}
+
+	/**
+	 * Calculate a trigger point
+	 * @param {Object} mark 
+	 */
+	function calculateTriggerPoint (mark) {
+		mark.triggerPoint = typeof offset === 'function' ?
+			mark.offset(mark.element) :
+			mark.element.offsetTop - mark.offset;
 	}
 
 	/**
 	 * Set options
 	 * @param {Object} options 
 	 */
-	function config(options) {
+	function config (options) {
 		scrollThrottle = options.throttle;
 	}
 
