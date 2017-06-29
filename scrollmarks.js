@@ -189,12 +189,16 @@
 	 */
 	function triggerQueue () {
 		// put trigger marks in order
-		queue.sort((a,b) => direction === 'down' ? a.triggerPoint - b.triggerPoint : b.triggerPoint - a.triggerPoint);
+		if (direction === 'down') {
+			queue.sort((a,b) => a.triggerPoint - b.triggerPoint);
+		} else {
+			queue.sort((a,b) => b.triggerPoint - a.triggerPoint);
+		}
 		// call each mark
 		queue.forEach((mark) => {
-			// TODO do we need binding?
+			// TODO bind the callback?
 			mark.callback(mark.element, direction)
-			// delete transient marks
+			// delete onetime marks
 			if (mark.once) {
 				scrollMarks.delete(mark.key);
 			}
