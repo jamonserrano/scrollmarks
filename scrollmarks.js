@@ -254,7 +254,7 @@
 	 * @param {Object} mark 
 	 */
 	function calculateTriggerPoint (mark) {
-		mark.triggerPoint = typeof offset === 'function' ?
+		mark.triggerPoint = typeof mark.offset === 'function' ?
 			mark.offset(mark.element) :
 			mark.element.offsetTop - mark.offset;
 	}
