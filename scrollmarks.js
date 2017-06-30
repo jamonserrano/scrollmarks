@@ -69,6 +69,7 @@
 
 	/**
 	 * Add a new scrollmark
+	 * @public
 	 * @param {Object} mark
 	 * @param {HTMLElement} mark.element
 	 * @param {Function} mark.callback
@@ -125,6 +126,7 @@
 
 	/**
 	 * Remove a scrollmark
+	 * @public
 	 * @param {number} key
 	 */
 	function remove (key) {
@@ -136,6 +138,7 @@
 
 	/**
 	 * Start listening
+	 * @public
 	 */
 	function start () {
 		if (!running) {
@@ -150,6 +153,7 @@
 
 	/**
 	 * Stop listening
+	 * @public
 	 */
 	function stop () {
 		if (running) {
@@ -329,6 +333,7 @@
 
 	/**
 	 * Refresh one or all marks
+	 * @public
 	 * @param {number} [key] 
 	 */
 	function refresh(key) {
@@ -341,6 +346,7 @@
 
 	/**
 	 * Set options
+	 * @public
 	 * @param {Object} options 
 	 * @param {number} options.scrollThrottle
 	 * @param {number} options.resizeThrottle
