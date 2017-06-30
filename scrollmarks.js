@@ -80,15 +80,15 @@
 	 */
 	function add (mark) {
 		const { element, callback, offset, direction, once } = mark;
-		// validate element
+
 		if (!(element instanceof HTMLElement)) {
 			throw new TypeError(`Parameter 'element' must be an HTML Element, got ${element} instead`);
 		}
-		// validate callback
+		
 		if (typeof callback !== 'function') {
 			throw new TypeError(`Parameter 'callback' must be a function, got ${callback} instead`);
 		}
-		// validate offset
+		
 		if (typeof offset === 'undefined') {
 			mark.offset = 0;
 		} else if (typeof offset === 'string' && offset.endsWith('%')) {
@@ -96,24 +96,21 @@
 		} else if (Number.isNaN(offset) && typeof offset !== 'function') {
 			throw new TypeError(`Optional parameter 'offset' must be a number, a percentage, or a function, got ${offset} instead`);
 		}
-		// validate direction
+		
 		if (direction && direction !== 'up' && direction !== 'down') {
 			throw new TypeError(`Optional parameter 'direction' must be either 'up' or 'down', got ${direction} instead`);
 		}
-		// validate once
+
 		if (typeof once !== 'undefined' && typeof once !== 'boolean') {
 			throw new TypeError(`Optional parameter 'once' must be true or false, got ${once} instead`);
 		}
 
-		// add triggerpoint
 		calculateTriggerPoint(mark);
 		
-		// generate key
 		const key = index++;
 		mark.key = key;		
 		scrollMarks.set(key, mark);
 		
-		// start listening
 		if (!running) {
 			start();
 		} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
@@ -143,8 +140,8 @@
 	function start () {
 		if (!running) {
 			running = true;
-			// the document can already be scrolled so run a check
 			checkMarks();
+
 			window.addEventListener('scroll', onScroll, listenerProperties);
 			window.addEventListener('resize', onResize, listenerProperties);
 			clock = window.requestAnimationFrame(checkState);
@@ -234,7 +231,6 @@
 			if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
 				const triggerPoint = mark.triggerPoint;
 				// 2nd check: element actually crossed the mark (below -> above or above -> below)
-				// from https://github.com/imakewebthings/waypoints
 				if ((previousScroll < triggerPoint) === (triggerPoint <= currentScroll)) {
 					// mark should be triggered
 					queue.push(mark);
@@ -264,9 +260,8 @@
 	 * @param {Object} mark 
 	 */
 	function trigger(mark) {
-		// TODO bind the callback?
 		mark.callback(mark.element, scrollDirection)
-		// delete onetime marks
+
 		if (mark.once) {
 			remove(mark.key);
 		}
