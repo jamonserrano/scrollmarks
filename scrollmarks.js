@@ -148,6 +148,8 @@
 		window.removeEventListener('resize', onResize, listenerProperties);
 		// document height
 		window.cancelAnimationFrame(clock);
+
+		resetTickers();
 	}
 
 	/**
@@ -278,6 +280,10 @@
 			window.pageYOffset + mark.element.getBoundingClientRect().top - mark.offset;
 	}
 
+	/**
+	 * Refresh one or all marks
+	 * @param {Number} [key] 
+	 */
 	function refresh(key) {
 		if (typeof key !== 'undefined' && scrollMarks.has(key)) {
 			idle(() => calculateTriggerPoint(scrollMarks.get(key)));
@@ -286,14 +292,36 @@
 		}
 	}
 
+	function resetTickers() {
+		scrollTick = 0;
+		resizeTick = 0;
+	}
+
 	/**
 	 * Set options
 	 * @param {Object} options 
+	 * @param {number} options.scrollThrottle
+	 * @param {number} options.resizeThrottle
+	 * @param {number} options.idleTimeout
 	 */
 	function config (options) {
-		scrollThrottle = options.scrollThrottle;
-		resizeThrottle = options.resizeThrottle;
-		idleTimeout = options.idleTimeout;
+		const newScrollThrottle = options.scrollThrottle;
+		const newResizeThrottle = options.resizeThrottle;
+		const newIdleTimeout = options.idleTimeout;
+
+		if (!isNaN(newScrollThrottle) && newScrollThrottle > -1) {
+			scrollThrottle = options.scrollThrottle;
+		}
+		if (!isNaN(newResizeThrottle) && newResizeThrottle > -1) {
+			resizeThrottle = options.resizeThrottle;
+		}
+		if (!isNaN(newIdleTimeout) && newIdleTimeout > -1) {
+			idleTimeout = options.idleTimeout;
+		}
+		
+		if (started) {
+			resetTickers();
+		}
 	}
 
 	return {add, remove, start, stop, config, refresh};
