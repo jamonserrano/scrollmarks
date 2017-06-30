@@ -24,19 +24,10 @@
 	// queue for triggered marks
 	let queue = [];
 	
-	// documentElement cached
-	const documentElement = document.documentElement;
-	// previous document height
-	let previousHeight = documentElement.offsetHeight;
-	
 	// started state
 	let running = false;
-	// previous scroll position;
-	let previousScroll = 0;
 	// central clock
 	let clock;
-	// scroll direction
-	let direction;
 	
 	// document was scrolled
 	let scrolled = false;	
@@ -44,6 +35,10 @@
 	let scrollTick = 0;
 	// throttle for scroll events (configurable)
 	let scrollThrottle = 10;
+	// previous scroll position;
+	let previousScroll = 0;
+	// scroll direction
+	let scrollDirection;
 	
 	// document was resized
 	let resized = false;
@@ -51,6 +46,10 @@
 	let resizeTick = 0;
 	// throttle for resize events (configurable)
 	let resizeThrottle = 30;
+	// documentElement cached
+	const documentElement = document.documentElement;
+	// previous document height
+	let previousHeight = documentElement.offsetHeight;
 
 	// browser support idle callback
 	const hasIdleCallback = window.requestIdleCallback;
@@ -111,15 +110,16 @@
 		// generate key
 		const key = index++;
 		mark.key = key;		
-		
-		// add scrollmark to list
 		scrollMarks.set(key, mark);
 		
 		// start listening
 		if (!running) {
 			start();
+		} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
+			// don't wait until the next event to trigger the mark
+			trigger(mark);
 		}
-		// TODO trigger if already passed?
+
 		return key;
 	}
 
@@ -138,30 +138,28 @@
 	 * Start listening
 	 */
 	function start () {
-		if (running) {
-			return;
+		if (!running) {
+			running = true;
+			// the document can already be scrolled so run a check
+			checkMarks();
+			window.addEventListener('scroll', onScroll, listenerProperties);
+			window.addEventListener('resize', onResize, listenerProperties);
+			clock = window.requestAnimationFrame(checkState);
 		}
-		running = true;
-		// the document can already be scrolled so run a check
-		checkMarks();
-		window.addEventListener('scroll', onScroll, listenerProperties);
-		window.addEventListener('resize', onResize, listenerProperties);
-		clock = window.requestAnimationFrame(checkState);
 	}
 
 	/**
 	 * Stop listening
 	 */
 	function stop () {
-		if (!running) {
-			return;
+		if (running) {
+			window.removeEventListener('scroll', onScroll, listenerProperties);
+			window.removeEventListener('resize', onResize, listenerProperties);
+			window.cancelAnimationFrame(clock);
+			
+			running = false;
+			resetTicks();
 		}
-		window.removeEventListener('scroll', onScroll, listenerProperties);
-		window.removeEventListener('resize', onResize, listenerProperties);
-		window.cancelAnimationFrame(clock);
-		
-		running = false;
-		resetTicks();
 	}
 
 	/**
@@ -224,12 +222,12 @@
 	function checkMarks () {
 		// get scroll position and direction
 		const currentScroll = window.pageYOffset;
-		direction = previousScroll < currentScroll ? 'down' : 'up';
+		scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
 		
 		scrollMarks.forEach((mark) => {
 			const markDirection = mark.direction;
 			// 1st check: element is visible and direction matches (or not defined)
-			if (mark.element.offsetParent !== null && (!markDirection || markDirection === direction)) {
+			if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
 				const triggerPoint = mark.triggerPoint;
 				// 2nd check: element actually crossed the mark (below -> above or above -> below)
 				// from https://github.com/imakewebthings/waypoints
@@ -250,22 +248,54 @@
 	 */
 	function triggerQueue () {
 		// put trigger marks in order
-		if (direction === 'down') {
-			queue.sort((a,b) => a.triggerPoint - b.triggerPoint);
-		} else {
-			queue.sort((a,b) => b.triggerPoint - a.triggerPoint);
-		}
+		queue.sort(scrollDirection === 'down' ? sortAscending : sortDescending);
 		// call each mark
-		queue.forEach((mark) => {
-			// TODO bind the callback?
-			mark.callback(mark.element, direction)
-			// delete onetime marks
-			if (mark.once) {
-				remove(mark.key);
-			}
-		});
+		queue.forEach(trigger);
 		// empty queue
 		queue = [];
+	}
+
+	/**
+	 * Trigger a single mark
+	 * @param {Object} mark 
+	 */
+	function trigger(mark) {
+		// TODO bind the callback?
+		mark.callback(mark.element, scrollDirection)
+		// delete onetime marks
+		if (mark.once) {
+			remove(mark.key);
+		}
+	}
+
+	/**
+	 * Sort by ascending triggerpoints
+	 * @param {Object} a mark 
+	 * @param {Object} b mark
+	 * @return {number}
+	 */
+	function sortAscending (a,b) {
+		return a.triggerPoint - b.triggerPoint;
+	}
+
+	/**
+	 * Sort by descending triggerpoints
+	 * @param {Object} a mark 
+	 * @param {Object} b mark
+	 * @return {number}
+	 */
+	function sortDescending (a,b) {
+		return b.triggerPoint - a.triggerPoint;
+	}
+
+	/**
+	 * Check if the mark's direction matches the current (or provided) scroll direction
+	 * @param {('up'|'down'|undefined)} markDirection 
+	 * @param {('up'|'down')} [direction]
+	 * @return {boolean} match
+	 */
+	function directionMatches(markDirection, direction) {
+		return !markDirection || markDirection === (direction || scrollDirection);
 	}
 
 	/**
