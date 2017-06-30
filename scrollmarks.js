@@ -18,28 +18,34 @@
 	const scrollMarks = new Map();
 	// documentElement cached
 	const documentElement = document.documentElement;
+	// browser support idle callback
+	const hasIdleCallback = window.requestIdleCallback;
+	// maximum allowed timeout (configurable)
+	let idleTimeout = 100;
 	// index of scrollmarks
 	let index = 0;
 	// started state
 	let started = false;
 	// frame counter for scroll events
 	let scrollTick = 0;
-	// throttle for scroll events
-	let scrollThrottle = 0;
+	// throttle for scroll events (configurable)
+	let scrollThrottle = 10;
 	// frame counter for resize events
 	let resizeTick = 0;
-	// throttle for resize events
+	// throttle for resize events (configurable)
 	let resizeThrottle = 30;
 	// previous scroll position;
 	let previousScroll = 0;
 	// previous document height
 	let previousHeight = documentElement.offsetHeight;
 	// listener for document height changes
-	let heightChecker;
+	let clock;
 	// scroll direction
 	let direction;
 	// queue for triggered marks
 	let queue = [];
+	// document was scrolled
+	let scrolled = false;
 	// document was resized
 	let resized = false;
 	// event listener properties (false by default)
@@ -121,7 +127,7 @@
 		// resize
 		window.addEventListener('resize', onResize, listenerProperties);
 		// document height
-		heightChecker = window.requestAnimationFrame(checkDocumentHeight);
+		clock = window.requestAnimationFrame(checkState);
 		// the document can already be scrolled so run a check
 		checkMarks();
 	}
@@ -139,7 +145,7 @@
 		// resize
 		window.removeEventListener('resize', onResize, listenerProperties);
 		// document height
-		window.cancelAnimationFrame(heightChecker);
+		window.cancelAnimationFrame(clock);
 	}
 
 	/**
@@ -147,12 +153,7 @@
 	 * Calls rAF on every nth event (or nth frame in Chrome and FF)
 	 */
 	function onScroll () {
-		if (scrollTick === scrollThrottle) {
-			scrollTick = 0;
-			window.requestAnimationFrame(checkMarks);
-		} else {
-			scrollTick++;
-		}
+		window.requestAnimationFrame(() => scrolled = true);
 	}
 
 	/**
@@ -210,34 +211,44 @@
 	 * TODO throttle
 	 */
 	function onResize () {
-		resized = true;
+		window.requestAnimationFrame(() => resized = true);
 	}
 
 	/**
-	 * Handle document height and page resize
-	 * Both mean that the offsets should be recalculated
+	 * Single handler for scroll, document height, and page resize
 	 */
-	function checkDocumentHeight () {
+	function checkState () {
+		// resize check
 		if (resizeTick === resizeThrottle) {
-			// time to check the height
-			const height = documentElement.offsetHeight;
-			if (previousHeight !== height) {
-				updateTriggerPoints();
-				previousHeight = height;
+			if (resized) {
+				// document was resized
+				idle(updateTriggerPoints);
+				resized = false;
+			} else {
+				// check the height
+				const height = documentElement.offsetHeight;
+				if (previousHeight !== height) {
+					idle(updateTriggerPoints);
+					previousHeight = height;
+				}
 			}
-			// reset the ticker
-			resizeTick = 0;
-		} else if (resized) {
-			// document was resized
-			updateTriggerPoints();
-			resized = false;
-			// reset the ticker anyway to win some time until the next call
 			resizeTick = 0;
 		} else {
 			resizeTick++;
 		}
 
-		heightChecker = window.requestAnimationFrame(checkDocumentHeight);
+		// scroll check
+		if (scrollTick === scrollThrottle) {
+			if (scrolled) {
+				checkMarks();
+				scrolled = false;
+			}
+			scrollTick = 0;
+		} else {
+			scrollTick++;
+		}
+
+		clock = window.requestAnimationFrame(checkState);
 	}
 
 	/**
@@ -245,6 +256,14 @@
 	 */
 	function updateTriggerPoints () {
 		scrollMarks.forEach(calculateTriggerPoint);
+	}
+
+	function idle(func) {
+		if (hasIdleCallback) {
+			window.requestIdleCallback(func, {timeout: idleTimeout});
+		} else {
+			window.setTimeout(func, idleTimeout);
+		}
 	}
 
 	/**
@@ -259,9 +278,9 @@
 
 	function refresh(key) {
 		if (typeof key !== 'undefined' && scrollMarks.has(key)) {
-			calculateTriggerPoint(scrollMarks.get(key));
+			idle(() => calculateTriggerPoint(scrollMarks.get(key)));
 		} else {
-			updateTriggerPoints();
+			idle(updateTriggerPoints);
 		}
 	}
 
@@ -272,6 +291,7 @@
 	function config (options) {
 		scrollThrottle = options.scrollThrottle;
 		resizeThrottle = options.resizeThrottle;
+		idleTimeout = options.idleTimeout;
 	}
 
 	return {add, remove, start, stop, config, refresh};
