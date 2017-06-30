@@ -170,6 +170,52 @@
 	}
 
 	/**
+	 * Resize listener
+	 * Sets the resized flag for the clock
+	 */
+	function onResize () {
+		window.requestAnimationFrame(() => resized = true);
+	}
+
+	/**
+	 * Single handler for scroll, document height, and page resize
+	 */
+	function checkState () {
+		// resize check
+		if (resizeTick === resizeThrottle) {
+			if (resized) {
+				// document was resized
+				idle(updateTriggerPoints);
+				resized = false;
+			} else {
+				// check the height
+				const height = documentElement.offsetHeight;
+				if (previousHeight !== height) {
+					idle(updateTriggerPoints);
+					previousHeight = height;
+				}
+			}
+			resizeTick = 0;
+		} else {
+			resizeTick++;
+		}
+
+		// scroll check
+		if (scrollTick === scrollThrottle) {
+			if (scrolled) {
+				checkMarks();
+				scrolled = false;
+			}
+			scrollTick = 0;
+		} else {
+			scrollTick++;
+		}
+
+		clock = window.requestAnimationFrame(checkState);
+	}
+
+
+	/**
 	 * Checks if scrollmarks should be triggered
 	 */
 	function checkMarks () {
@@ -220,55 +266,20 @@
 	}
 
 	/**
-	 * Resize listener
-	 * Sets the resized flag for the clock
-	 */
-	function onResize () {
-		window.requestAnimationFrame(() => resized = true);
-	}
-
-	/**
-	 * Single handler for scroll, document height, and page resize
-	 */
-	function checkState () {
-		// resize check
-		if (resizeTick === resizeThrottle) {
-			if (resized) {
-				// document was resized
-				idle(updateTriggerPoints);
-				resized = false;
-			} else {
-				// check the height
-				const height = documentElement.offsetHeight;
-				if (previousHeight !== height) {
-					idle(updateTriggerPoints);
-					previousHeight = height;
-				}
-			}
-			resizeTick = 0;
-		} else {
-			resizeTick++;
-		}
-
-		// scroll check
-		if (scrollTick === scrollThrottle) {
-			if (scrolled) {
-				checkMarks();
-				scrolled = false;
-			}
-			scrollTick = 0;
-		} else {
-			scrollTick++;
-		}
-
-		clock = window.requestAnimationFrame(checkState);
-	}
-
-	/**
 	 * Update all trigger points
 	 */
 	function updateTriggerPoints () {
 		scrollMarks.forEach(calculateTriggerPoint);
+	}
+
+	/**
+	 * Calculate a trigger point
+	 * @param {Object} mark 
+	 */
+	function calculateTriggerPoint (mark) {
+		mark.triggerPoint = typeof mark.offset === 'function' ?
+			mark.offset(mark.element) :
+			window.pageYOffset + mark.element.getBoundingClientRect().top - mark.offset;
 	}
 
 	/**
@@ -284,16 +295,6 @@
 	}
 
 	/**
-	 * Calculate a trigger point
-	 * @param {Object} mark 
-	 */
-	function calculateTriggerPoint (mark) {
-		mark.triggerPoint = typeof mark.offset === 'function' ?
-			mark.offset(mark.element) :
-			window.pageYOffset + mark.element.getBoundingClientRect().top - mark.offset;
-	}
-
-	/**
 	 * Refresh one or all marks
 	 * @param {number} [key] 
 	 */
@@ -303,14 +304,6 @@
 		} else {
 			idle(updateTriggerPoints);
 		}
-	}
-
-	/**
-	 * Reset ticks
-	 */
-	function resetTicks() {
-		scrollTick = 0;
-		resizeTick = 0;
 	}
 
 	/**
@@ -338,6 +331,14 @@
 		if (running) {
 			resetTicks();
 		}
+	}
+
+	/**
+	 * Reset ticks
+	 */
+	function resetTicks() {
+		scrollTick = 0;
+		resizeTick = 0;
 	}
 
 	return {add, remove, start, stop, config, refresh};
