@@ -14,40 +14,46 @@
         root.ScrollMarks = factory();
 	}
 }(this, function () {
-	// store for the scrollmarks
+	// store for scrollmarks
 	const scrollMarks = new Map();
-	// documentElement cached
-	const documentElement = document.documentElement;
-	// browser support idle callback
-	const hasIdleCallback = window.requestIdleCallback;
-	// maximum allowed timeout (configurable)
-	let idleTimeout = 100;
 	// index of scrollmarks
 	let index = 0;
+	// queue for triggered marks
+	let queue = [];
+	
+	// documentElement cached
+	const documentElement = document.documentElement;
+	// previous document height
+	let previousHeight = documentElement.offsetHeight;
+	
 	// started state
-	let started = false;
+	let running = false;
+	// previous scroll position;
+	let previousScroll = 0;
+	// central clock
+	let clock;
+	// scroll direction
+	let direction;
+	
+	// document was scrolled
+	let scrolled = false;	
 	// frame counter for scroll events
 	let scrollTick = 0;
 	// throttle for scroll events (configurable)
 	let scrollThrottle = 10;
+	
+	// document was resized
+	let resized = false;
 	// frame counter for resize events
 	let resizeTick = 0;
 	// throttle for resize events (configurable)
 	let resizeThrottle = 30;
-	// previous scroll position;
-	let previousScroll = 0;
-	// previous document height
-	let previousHeight = documentElement.offsetHeight;
-	// listener for document height changes
-	let clock;
-	// scroll direction
-	let direction;
-	// queue for triggered marks
-	let queue = [];
-	// document was scrolled
-	let scrolled = false;
-	// document was resized
-	let resized = false;
+
+	// browser support idle callback
+	const hasIdleCallback = window.requestIdleCallback;
+	// maximum allowed timeout (configurable)
+	let idleTimeout = 100;
+	
 	// event listener properties (false by default)
 	let listenerProperties = false;
 	// set listener properties object if available
@@ -62,17 +68,24 @@
 	/**
 	 * Add a new scrollmark
 	 * @param {Object} mark
-	 * @return {Number} index
+	 * @param {HTMLElement} mark.element
+	 * @param {Function} mark.callback
+	 * @param {(number|string|function)} [mark.offset]
+	 * @param {('up'|'down')} [mark.direction]
+	 * @param {boolean} [mark.once]
+	 * @return {number} key
 	 */
 	function add (mark) {
 		const { element, callback, offset, direction, once } = mark;
-		// validate params
+		// validate element
 		if (!(element instanceof HTMLElement)) {
 			throw new TypeError(`Parameter 'element' must be an HTML Element, got ${element} instead`);
 		}
+		// validate callback
 		if (typeof callback !== 'function') {
 			throw new TypeError(`Parameter 'callback' must be a function, got ${callback} instead`);
 		}
+		// validate offset
 		if (typeof offset === 'undefined') {
 			mark.offset = 0;
 		} else if (typeof offset === 'string' && offset.endsWith('%')) {
@@ -80,9 +93,11 @@
 		} else if (Number.isNaN(offset) && typeof offset !== 'function') {
 			throw new TypeError(`Optional parameter 'offset' must be a number, a percentage, or a function, got ${offset} instead`);
 		}
+		// validate direction
 		if (direction && direction !== 'up' && direction !== 'down') {
 			throw new TypeError(`Optional parameter 'direction' must be either 'up' or 'down', got ${direction} instead`);
 		}
+		// validate once
 		if (typeof once !== 'undefined' && typeof once !== 'boolean') {
 			throw new TypeError(`Optional parameter 'once' must be true or false, got ${once} instead`);
 		}
@@ -98,7 +113,7 @@
 		scrollMarks.set(key, mark);
 		
 		// start listening
-		if (!started) {
+		if (!running) {
 			start();
 		}
 		// TODO trigger if already passed?
@@ -107,7 +122,7 @@
 
 	/**
 	 * Remove a scrollmark
-	 * @param {Number} index scrollmark index
+	 * @param {number} key
 	 */
 	function remove (key) {
 		scrollMarks.delete(key);
@@ -120,41 +135,35 @@
 	 * Start listening
 	 */
 	function start () {
-		if (started) {
+		if (running) {
 			return;
 		}
-		started = true;
-		// scroll
-		window.addEventListener('scroll', onScroll, listenerProperties);
-		// resize
-		window.addEventListener('resize', onResize, listenerProperties);
-		// document height
-		clock = window.requestAnimationFrame(checkState);
+		running = true;
 		// the document can already be scrolled so run a check
 		checkMarks();
+		window.addEventListener('scroll', onScroll, listenerProperties);
+		window.addEventListener('resize', onResize, listenerProperties);
+		clock = window.requestAnimationFrame(checkState);
 	}
 
 	/**
 	 * Stop listening
 	 */
 	function stop () {
-		if (!started) {
+		if (!running) {
 			return;
 		}
-		started = false;
-		// scroll
 		window.removeEventListener('scroll', onScroll, listenerProperties);
-		// resize
 		window.removeEventListener('resize', onResize, listenerProperties);
-		// document height
 		window.cancelAnimationFrame(clock);
-
-		resetTickers();
+		
+		running = false;
+		resetTicks();
 	}
 
 	/**
 	 * Scroll event listener
-	 * Calls rAF on every nth event (or nth frame in Chrome and FF)
+	 * Sets the scrolled flag for the clock
 	 */
 	function onScroll () {
 		window.requestAnimationFrame(() => scrolled = true);
@@ -188,7 +197,7 @@
 	}
 
 	/**
-	 * Trigger scrollmarks
+	 * Trigger affected scrollmarks
 	 */
 	function triggerQueue () {
 		// put trigger marks in order
@@ -211,8 +220,8 @@
 	}
 
 	/**
-	 * Set the resized flag
-	 * TODO throttle
+	 * Resize listener
+	 * Sets the resized flag for the clock
 	 */
 	function onResize () {
 		window.requestAnimationFrame(() => resized = true);
@@ -262,6 +271,10 @@
 		scrollMarks.forEach(calculateTriggerPoint);
 	}
 
+	/**
+	 * Run an idle callback
+	 * @param {Function} func 
+	 */
 	function idle(func) {
 		if (hasIdleCallback) {
 			window.requestIdleCallback(func, {timeout: idleTimeout});
@@ -282,7 +295,7 @@
 
 	/**
 	 * Refresh one or all marks
-	 * @param {Number} [key] 
+	 * @param {number} [key] 
 	 */
 	function refresh(key) {
 		if (typeof key !== 'undefined' && scrollMarks.has(key)) {
@@ -292,7 +305,10 @@
 		}
 	}
 
-	function resetTickers() {
+	/**
+	 * Reset ticks
+	 */
+	function resetTicks() {
 		scrollTick = 0;
 		resizeTick = 0;
 	}
@@ -318,9 +334,9 @@
 		if (!isNaN(newIdleTimeout) && newIdleTimeout > -1) {
 			idleTimeout = options.idleTimeout;
 		}
-		
-		if (started) {
-			resetTickers();
+
+		if (running) {
+			resetTicks();
 		}
 	}
 
