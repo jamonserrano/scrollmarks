@@ -1,7 +1,10 @@
+/* eslint-env browser, amd, commonjs, es6 */
+
 /*
- *  Copyright (c) 2017 Viktor Honti
- *  Licensed under the MIT License.
- *  https://github.com/jamonserrano/scrollmarks
+ * Scrollmarks
+ * Copyright (c) 2017 Viktor Honti
+ * Licensed under the MIT License.
+ * https://github.com/jamonserrano/scrollmarks
  */
 
 "use strict";
