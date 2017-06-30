@@ -49,7 +49,7 @@
 	// documentElement cached
 	const documentElement = document.documentElement;
 	// previous document height
-	let previousHeight = documentElement.offsetHeight;
+	let previousHeight = documentElement.scrollHeight;
 
 	// browser support idle callback
 	const hasIdleCallback = window.requestIdleCallback;
@@ -191,7 +191,7 @@
 				resized = false;
 			} else {
 				// check the height
-				const height = documentElement.offsetHeight;
+				const height = documentElement.scrollHeight;
 				if (previousHeight !== height) {
 					idle(updateTriggerPoints);
 					previousHeight = height;
