@@ -322,7 +322,7 @@
 		if (hasIdleCallback) {
 			window.requestIdleCallback(func, {timeout: idleTimeout});
 		} else {
-			window.setTimeout(func, idleTimeout);
+			window.setTimeout(func, 0);
 		}
 	}
 
