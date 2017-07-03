@@ -58,7 +58,7 @@
 	
 	// event listener properties (false by default)
 	let listenerProperties = false;
-	// set listener properties object if available
+	// set passive listener if available
 	window.addEventListener("test", null, {
 		get passive() {
 			listenerProperties = {
@@ -90,8 +90,10 @@
 		}
 		
 		if (typeof offset === 'undefined') {
+			// default
 			mark.offset = 0;
 		} else if (typeof offset === 'string' && offset.endsWith('%')) {
+			// generate function from percentage
 			mark.offset = (element) => window.pageYOffset + element.getBoundingClientRect().top - window.innerHeight * parseInt(offset) / 100;
 		} else if (Number.isNaN(offset) && typeof offset !== 'function') {
 			throw new TypeError(`Optional parameter 'offset' must be a number, a percentage, or a function, got ${offset} instead`);
@@ -352,14 +354,28 @@
 		const newResizeThrottle = options.resizeThrottle;
 		const newIdleTimeout = options.idleTimeout;
 
-		if (!isNaN(newScrollThrottle) && newScrollThrottle > -1) {
-			scrollThrottle = options.scrollThrottle;
+		if (isNaN(newScrollThrottle)) {
+			throw new TypeError(`Config parameter 'scrollThrottle' must be a number, got ${newScrollThrottle} instead`);
+		} else if (newScrollThrottle < 0) {
+			throw new RangeError(`Config parameter 'scrollThrottle' must be at least 0, got ${newScrollThrottle} instead`);
+		} else {
+			scrollThrottle = newScrollThrottle;
 		}
-		if (!isNaN(newResizeThrottle) && newResizeThrottle > -1) {
-			resizeThrottle = options.resizeThrottle;
+
+		if (isNaN(newResizeThrottle)) {
+			throw new TypeError(`Config parameter 'resizeThrottle' must be a number, got ${newResizeThrottle} instead`);
+		} else if (newResizeThrottle < 0) {
+			throw new RangeError(`Config parameter 'resizeThrottle' must be at least 0, got ${newResizeThrottle} instead`);
+		} else {
+			resizeThrottle = newResizeThrottle;
 		}
-		if (!isNaN(newIdleTimeout) && newIdleTimeout > -1) {
-			idleTimeout = options.idleTimeout;
+
+		if (isNaN(newIdleTimeout)) {
+			throw new TypeError(`Config parameter 'idleTimeout' must be a number, got ${newIdleTimeout} instead`);
+		} else if (newIdleTimeout < 1) {
+			throw new RangeError(`Config parameter 'idleTimeout' must be a positive number, got ${newIdleTimeout} instead`);
+		} else {
+			idleTimeout = newIdleTimeout;
 		}
 
 		if (running) {
