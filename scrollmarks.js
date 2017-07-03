@@ -93,8 +93,8 @@
 			// default
 			mark.computedOffset = 0;
 		} else if (typeof offset === 'string' && offset.endsWith('%')) {
-			// generate function from percentage
-			mark.computedOffset = (element) => window.pageYOffset + element.getBoundingClientRect().top - window.innerHeight * parseInt(offset) / 100;
+			// generate function from percentage (viewport size can change)
+			mark.computedOffset = () => window.innerHeight * parseInt(offset) / 100;
 		} else if (!Number.isNaN(offset) || typeof offset === 'function') {
 			mark.computedOffset = offset;
 		} else {
@@ -313,9 +313,9 @@
 	 * @param {Object} mark 
 	 */
 	function calculateTriggerPoint (mark) {
-		mark.triggerPoint = typeof mark.computedOffset === 'function' ?
-			mark.computedOffset(mark.element) :
-			window.pageYOffset + mark.element.getBoundingClientRect().top - mark.computedOffset;
+		const computedOffset = mark.computedOffset;
+		const offsetValue = typeof computedOffset === 'function' ? computedOffset(mark.element) : computedOffset;
+		mark.triggerPoint = window.pageYOffset + mark.element.getBoundingClientRect().top - offsetValue;
 	}
 
 	/**
