@@ -260,7 +260,7 @@
 	 * @param {Object} mark 
 	 */
 	function trigger(mark) {
-		mark.callback(mark.element, scrollDirection)
+		mark.callback(mark, scrollDirection)
 
 		if (mark.once) {
 			remove(mark.key);
