@@ -336,10 +336,12 @@
 	 * @param {number} [key] 
 	 */
 	function refresh(key) {
-		if (typeof key !== 'undefined' && scrollMarks.has(key)) {
+		if (typeof key === 'undefined') {
+			idle(updateTriggerPoints);
+		} else if (scrollMarks.has(key)) {
 			idle(() => calculateTriggerPoint(scrollMarks.get(key)));
 		} else {
-			idle(updateTriggerPoints);
+			throw new ReferenceError(`Could not refresh scrollmark '${key}', scrollmark doesn't exist`);
 		}
 	}
 
