@@ -2,7 +2,7 @@
   "name": "scrollmarks",
   "version": "0.1.0",
   "description": "",
-  "main": "scrollmarks.js",
+  "main": "lib/scrollmarks.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,7 +21,7 @@
     "babel-cli": "^6.24.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
-    "babel-preset-env": "^1.5.2",
-    "babel-runtime": "^6.23.0"
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.5.2"
   }
 }
