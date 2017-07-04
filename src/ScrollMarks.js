@@ -7,8 +7,10 @@
  * https://github.com/jamonserrano/scrollmarks
  */
 
+// browser supports maps
+const hasMap = window.Map;
 // store for scrollmarks
-const scrollMarks = new Map();
+const scrollMarks = hasMap ? new Map() : {};
 // index of scrollmarks
 let index = 0;
 // queue for triggered marks
@@ -41,7 +43,7 @@ const documentElement = document.documentElement;
 // previous document height
 let previousHeight = documentElement.scrollHeight;
 
-// browser support idle callback
+// browser supports idle callback
 const hasIdleCallback = window.requestIdleCallback;
 // maximum allowed timeout (configurable)
 let idleTimeout = 100;
@@ -103,7 +105,7 @@ function add (mark) {
 	
 	const key = index++;
 	mark.key = key;		
-	scrollMarks.set(key, mark);
+	setMark(key, mark);
 	
 	if (!running) {
 		start();
@@ -121,8 +123,8 @@ function add (mark) {
  * @param {number} key
  */
 function remove (key) {
-	scrollMarks.delete(key);
-	if (!scrollMarks.size) {
+	deleteMark(key);
+	if (noMarksLeft) {
 		stop();
 	}
 }
@@ -219,7 +221,7 @@ function checkMarks () {
 	const currentScroll = window.pageYOffset;
 	scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
 	
-	scrollMarks.forEach((mark) => {
+	forEachMark((mark) => {
 		const markDirection = mark.direction;
 		// 1st check: element is visible and direction matches (or not defined)
 		if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
@@ -295,7 +297,7 @@ function directionMatches(markDirection, direction) {
  * Update all trigger points
  */
 function updateTriggerPoints () {
-	scrollMarks.forEach(calculateTriggerPoint);
+	forEachMark(calculateTriggerPoint);
 }
 
 /**
@@ -306,18 +308,6 @@ function calculateTriggerPoint (mark) {
 	const computedOffset = mark.computedOffset;
 	const offsetValue = typeof computedOffset === 'function' ? computedOffset(mark.element) : computedOffset;
 	mark.triggerPoint = window.pageYOffset + mark.element.getBoundingClientRect().top - offsetValue;
-}
-
-/**
- * Run an idle callback
- * @param {Function} func 
- */
-function idle(func) {
-	if (hasIdleCallback) {
-		window.requestIdleCallback(func, {timeout: idleTimeout});
-	} else {
-		window.setTimeout(func, 0);
-	}
 }
 
 /**
@@ -333,6 +323,63 @@ function refresh(key) {
 	} else {
 		throw new ReferenceError(`Could not refresh scrollmark '${key}', scrollmark doesn't exist`);
 	}
+}
+
+/**
+ * Idle callback shim
+ * @param {Function} func 
+ */
+function idle(func) {
+	if (hasIdleCallback) {
+		window.requestIdleCallback(func, {timeout: idleTimeout});
+	} else {
+		window.setTimeout(func, 0);
+	}
+}
+
+/**
+ * Map.set shim
+ * @param {number} key 
+ * @param {Object} value 
+ */
+function setMark(key, value) {
+	if (hasMap) {
+		scrollMarks.set(key, value);
+	} else {
+		scrollMarks[key] = value;
+	}
+}
+
+/**
+ * Map.remove shim
+ * @param {number} key 
+ */
+function deleteMark(key) {
+	if (hasMap) {
+		scrollMarks.delete(key);
+	} else {
+		delete scrollMarks[key];
+	}
+}
+
+/**
+ * Map.forEach shim
+ * @param {Function} callback 
+ */
+function forEachMark(callback) {
+	if (hasMap) {
+		scrollMarks.forEach(callback);
+	} else {
+		Object.keys(scrollMarks).forEach(key => callback(scrollMarks[key]));
+	}
+}
+
+/**
+ * Map.size shim - checks if the map is empty
+ * @return {boolean}
+ */
+function noMarksLeft() {
+	return ! (hasMap ? scrollMarks.size : Object.keys(scrollMarks).length);
 }
 
 /**
