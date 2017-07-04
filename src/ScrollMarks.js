@@ -74,11 +74,11 @@ function add (mark) {
 	const { element, callback, offset, direction, once } = mark;
 
 	if (!(element instanceof HTMLElement)) {
-		throw new TypeError(`Parameter 'element' must be an HTML Element, got ${element} instead`);
+		throw new TypeError(errorMessage(false, 'element', 'an HTML Element', element));
 	}
 	
 	if (!isFunction(callback)) {
-		throw new TypeError(`Parameter 'callback' must be a function, got ${callback} instead`);
+		throw new TypeError(errorMessage(false, 'callback', 'a function', callback));
 	}
 	
 	if (isUndefined(offset)) {
@@ -90,15 +90,15 @@ function add (mark) {
 	} else if (isNumber(offset) || isFunction(offset)) {
 		mark.computedOffset = offset;
 	} else {
-		throw new TypeError(`Optional parameter 'offset' must be a number, a percentage, or a function, got ${offset} instead`);
+		throw new TypeError(errorMessage('Optional', 'offset', 'a number, a percentage, or a function', offset));
 	}
 	
 	if (direction && direction !== 'up' && direction !== 'down') {
-		throw new TypeError(`Optional parameter 'direction' must be either 'up' or 'down', got ${direction} instead`);
+		throw new TypeError(errorMessage('Optional', 'direction', `'up' or 'down'`, direction));
 	}
 
 	if (!isUndefined(once) && once !== true) {
-		throw new TypeError(`Optional parameter 'once' must be true, got ${once} instead`);
+		throw new TypeError(errorMessage('Optional', 'once', 'true', once));
 	}
 
 	calculateTriggerPoint(mark);
@@ -410,6 +410,19 @@ function isUndefined(value) {
 }
 
 /**
+ * Composes an error message
+ * @param {string} type
+ * @param {string} name
+ * @param {string} expected
+ * @param {*} actual
+ * @return {string}
+ */
+function errorMessage(type, name, expected, actual) {
+	const param = type ? ' parameter' : 'Parameter';
+	return `${type}${param} '${name}' must be ${expected}, got ${actual} instead`;
+}
+
+/**
  * Set options
  * @public
  * @param {Object} options 
@@ -423,25 +436,25 @@ function config (options) {
 	const newIdleTimeout = options.idleTimeout;
 
 	if (!isNumber(newScrollThrottle)) {
-		throw new TypeError(`Config parameter 'scrollThrottle' must be a number, got ${newScrollThrottle} instead`);
+		throw new TypeError(errorMessage('Config', 'scrollThrottle', 'a number', newScrollThrottle));
 	} else if (newScrollThrottle < 0) {
-		throw new RangeError(`Config parameter 'scrollThrottle' must be at least 0, got ${newScrollThrottle} instead`);
+		throw new RangeError(errorMessage('Config', 'scrollThrottle', 'at least 0', newScrollThrottle));
 	} else {
 		scrollThrottle = newScrollThrottle;
 	}
 
 	if (!isNumber(newResizeThrottle)) {
-		throw new TypeError(`Config parameter 'resizeThrottle' must be a number, got ${newResizeThrottle} instead`);
+		throw new TypeError(errorMessage('Config', 'resizeThrottle', 'a number', newResizeThrottle));
 	} else if (newResizeThrottle < 0) {
-		throw new RangeError(`Config parameter 'resizeThrottle' must be at least 0, got ${newResizeThrottle} instead`);
+		throw new RangeError(errorMessage('Config', 'resizeThrottle', 'at least 0', newResizeThrottle));
 	} else {
 		resizeThrottle = newResizeThrottle;
 	}
 
 	if (!isNumber(newIdleTimeout)) {
-		throw new TypeError(`Config parameter 'idleTimeout' must be a number, got ${newIdleTimeout} instead`);
+		throw new TypeError(errorMessage('Config', 'idleTimeout', 'a number', newIdleTimeout));
 	} else if (newIdleTimeout < 1) {
-		throw new RangeError(`Config parameter 'idleTimeout' must be a positive number, got ${newIdleTimeout} instead`);
+		throw new RangeError(errorMessage('Config', 'idleTimeout', 'a positive number', newIdleTimeout));
 	} else {
 		idleTimeout = newIdleTimeout;
 	}
