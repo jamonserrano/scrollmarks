@@ -5,7 +5,7 @@
   "main": "lib/scrollmarks.js",
   "module": "src/scrollmarks.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "karma start --single-run",
     "start": "babel src/scrollmarks.js --watch --out-file lib/scrollmarks.js"
   },
   "repository": {
@@ -25,6 +25,16 @@
     "babel-plugin-rename-umd-globals": "^1.0.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.5.2"
+    "babel-preset-env": "^1.5.2",
+    "chai": "^4.0.2",
+    "karma": "^1.7.0",
+    "karma-chai": "^0.1.0",
+    "karma-chai-dom": "^1.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-eslint": "^2.2.0",
+    "karma-fixture": "^0.2.6",
+    "karma-html2js-preprocessor": "^1.1.0",
+    "karma-mocha": "^1.3.0",
+    "mocha": "^3.4.2"
   }
 }
