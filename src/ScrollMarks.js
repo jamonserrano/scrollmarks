@@ -7,10 +7,8 @@
  * https://github.com/jamonserrano/scrollmarks
  */
 
-// browser supports maps
-const hasMap = window.Map;
 // store for scrollmarks
-const scrollMarks = hasMap ? new Map() : {};
+const scrollMarks = window.Map ? new Map() : createfakeMap();
 // index of scrollmarks
 let index = 0;
 // queue for triggered marks
@@ -105,7 +103,7 @@ function add (mark) {
 	
 	const key = index++;
 	mark.key = key;		
-	setMark(key, mark);
+	scrollMarks.set(key, mark);
 	
 	if (!running) {
 		start();
@@ -123,8 +121,10 @@ function add (mark) {
  * @param {number} key
  */
 function remove (key) {
-	deleteMark(key);
-	if (noMarksLeft) {
+	if (!scrollMarks.delete(key)) {
+		throw new ReferenceError(`Could not remove scrollmark '${key}', mark doesn't exist`);
+	}
+	if (!scrollMarks.size) {
 		stop();
 	}
 }
@@ -221,7 +221,7 @@ function checkMarks () {
 	const currentScroll = window.pageYOffset;
 	scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
 	
-	forEachMark((mark) => {
+	scrollMarks.forEach((mark) => {
 		const markDirection = mark.direction;
 		// 1st check: element is visible and direction matches (or not defined)
 		if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
@@ -297,7 +297,7 @@ function directionMatches(markDirection, direction) {
  * Update all trigger points
  */
 function updateTriggerPoints () {
-	forEachMark(calculateTriggerPoint);
+	scrollMarks.forEach(calculateTriggerPoint);
 }
 
 /**
@@ -321,7 +321,7 @@ function refresh(key) {
 	} else if (scrollMarks.has(key)) {
 		idle(() => calculateTriggerPoint(scrollMarks.get(key)));
 	} else {
-		throw new ReferenceError(`Could not refresh scrollmark '${key}', scrollmark doesn't exist`);
+		throw new ReferenceError(`Could not refresh scrollmark '${key}', mark doesn't exist`);
 	}
 }
 
@@ -338,48 +338,43 @@ function idle(func) {
 }
 
 /**
- * Map.set shim
- * @param {number} key 
- * @param {Object} value 
+ * Create a fake Map object
+ * @return {Object}
  */
-function setMark(key, value) {
-	if (hasMap) {
-		scrollMarks.set(key, value);
-	} else {
-		scrollMarks[key] = value;
-	}
-}
-
-/**
- * Map.remove shim
- * @param {number} key 
- */
-function deleteMark(key) {
-	if (hasMap) {
-		scrollMarks.delete(key);
-	} else {
-		delete scrollMarks[key];
-	}
-}
-
-/**
- * Map.forEach shim
- * @param {Function} callback 
- */
-function forEachMark(callback) {
-	if (hasMap) {
-		scrollMarks.forEach(callback);
-	} else {
-		Object.keys(scrollMarks).forEach(key => callback(scrollMarks[key]));
-	}
-}
-
-/**
- * Map.size shim - checks if the map is empty
- * @return {boolean}
- */
-function noMarksLeft() {
-	return ! (hasMap ? scrollMarks.size : Object.keys(scrollMarks).length);
+function createfakeMap() {
+	return Object.defineProperties({}, {
+		'delete': {
+			value: function (key) {
+				return this.has(key) && delete this[key];
+			}
+		},
+		'forEach': {
+			value: function (callback) {
+				Object.keys(this).forEach(key => callback(this[key], key, this));
+			}
+		},
+		'get': {
+			value: function (key) {
+				return this[key];
+			}
+		},
+		'has': {
+			value: function (key) {
+				return this.hasOwnProperty(key);
+			}
+		},
+		'set': {
+			value: function (key, value) {
+				this[key] = value;
+				return this;
+			}
+		},
+		'size': {
+			get: function () {
+				return Object.keys(this).length;
+			}
+		}
+	});
 }
 
 /**
