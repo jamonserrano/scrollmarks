@@ -77,17 +77,17 @@ function add (mark) {
 		throw new TypeError(`Parameter 'element' must be an HTML Element, got ${element} instead`);
 	}
 	
-	if (typeof callback !== 'function') {
+	if (!isFunction(callback)) {
 		throw new TypeError(`Parameter 'callback' must be a function, got ${callback} instead`);
 	}
 	
-	if (typeof offset === 'undefined') {
+	if (isUndefined(offset)) {
 		// default
 		mark.computedOffset = 0;
 	} else if (typeof offset === 'string' && offset.endsWith('%')) {
 		// generate function from percentage (viewport size can change)
 		mark.computedOffset = () => window.innerHeight * parseInt(offset) / 100;
-	} else if (!Number.isNaN(offset) || typeof offset === 'function') {
+	} else if (isNumber(offset) || isFunction(offset)) {
 		mark.computedOffset = offset;
 	} else {
 		throw new TypeError(`Optional parameter 'offset' must be a number, a percentage, or a function, got ${offset} instead`);
@@ -97,8 +97,8 @@ function add (mark) {
 		throw new TypeError(`Optional parameter 'direction' must be either 'up' or 'down', got ${direction} instead`);
 	}
 
-	if (typeof once !== 'undefined' && typeof once !== 'boolean') {
-		throw new TypeError(`Optional parameter 'once' must be true or false, got ${once} instead`);
+	if (!isUndefined(once) && once !== true) {
+		throw new TypeError(`Optional parameter 'once' must be true, got ${once} instead`);
 	}
 
 	calculateTriggerPoint(mark);
@@ -306,7 +306,7 @@ function updateTriggerPoints () {
  */
 function calculateTriggerPoint (mark) {
 	const computedOffset = mark.computedOffset;
-	const offsetValue = typeof computedOffset === 'function' ? computedOffset(mark.element) : computedOffset;
+	const offsetValue = isFunction(computedOffset) ? computedOffset(mark.element) : computedOffset;
 	mark.triggerPoint = window.pageYOffset + mark.element.getBoundingClientRect().top - offsetValue;
 }
 
@@ -316,7 +316,7 @@ function calculateTriggerPoint (mark) {
  * @param {number} [key] 
  */
 function refresh(key) {
-	if (typeof key === 'undefined') {
+	if (isUndefined(key)) {
 		idle(updateTriggerPoints);
 	} else if (scrollMarks.has(key)) {
 		idle(() => calculateTriggerPoint(scrollMarks.get(key)));
@@ -383,6 +383,33 @@ function noMarksLeft() {
 }
 
 /**
+ * Checks if the value is a number
+ * @param {*} value 
+ * @return {boolean}
+ */
+function isNumber(value) {
+	return typeof value === 'number';
+}
+
+/**
+ * Checks if the value is a function
+ * @param {*} value 
+ * @return {boolean}
+ */
+function isFunction(value) {
+	return typeof value === 'function';
+}
+
+/**
+ * Checks if the value is undefined
+ * @param {*} value 
+ * @return {boolean}
+ */
+function isUndefined(value) {
+	return value === undefined;
+}
+
+/**
  * Set options
  * @public
  * @param {Object} options 
@@ -395,7 +422,7 @@ function config (options) {
 	const newResizeThrottle = options.resizeThrottle;
 	const newIdleTimeout = options.idleTimeout;
 
-	if (Number.isNaN(newScrollThrottle)) {
+	if (!isNumber(newScrollThrottle)) {
 		throw new TypeError(`Config parameter 'scrollThrottle' must be a number, got ${newScrollThrottle} instead`);
 	} else if (newScrollThrottle < 0) {
 		throw new RangeError(`Config parameter 'scrollThrottle' must be at least 0, got ${newScrollThrottle} instead`);
@@ -403,7 +430,7 @@ function config (options) {
 		scrollThrottle = newScrollThrottle;
 	}
 
-	if (Number.isNaN(newResizeThrottle)) {
+	if (!isNumber(newResizeThrottle)) {
 		throw new TypeError(`Config parameter 'resizeThrottle' must be a number, got ${newResizeThrottle} instead`);
 	} else if (newResizeThrottle < 0) {
 		throw new RangeError(`Config parameter 'resizeThrottle' must be at least 0, got ${newResizeThrottle} instead`);
@@ -411,7 +438,7 @@ function config (options) {
 		resizeThrottle = newResizeThrottle;
 	}
 
-	if (Number.isNaN(newIdleTimeout)) {
+	if (!isNumber(newIdleTimeout)) {
 		throw new TypeError(`Config parameter 'idleTimeout' must be a number, got ${newIdleTimeout} instead`);
 	} else if (newIdleTimeout < 1) {
 		throw new RangeError(`Config parameter 'idleTimeout' must be a positive number, got ${newIdleTimeout} instead`);
