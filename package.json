@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "description": "",
   "main": "lib/scrollmarks.js",
+  "module": "src/scrollmarks.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel src/scrollmarks.js --watch --out-file lib/scrollmarks.js"
   },
   "repository": {
     "type": "git",
