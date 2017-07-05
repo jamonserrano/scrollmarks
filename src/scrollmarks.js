@@ -426,19 +426,19 @@ function errorMessage(type, name, expected, actual) {
  * @param {number} options.idleTimeout
  */
 function config (options) {
-	if (!options) {
+	if (isUndefined(options)) {
 		return {scrollThrottle, resizeThrottle, idleTimeout};
 	}
-	if (validateOption(options, 'scrollThrottle')) {
+	if (isValidOption(options, 'scrollThrottle')) {
 		debugger;
 		scrollThrottle = options.scrollThrottle;
 	}
 
-	if (validateOption(options, 'resizeThrottle')) {
+	if (isValidOption(options, 'resizeThrottle')) {
 		resizeThrottle = options.resizeThrottle;
 	}
 
-	if (validateOption(options, 'idleTimeout')) {
+	if (isValidOption(options, 'idleTimeout')) {
 		idleTimeout = options.idleTimeout;
 	}
 
@@ -452,7 +452,7 @@ function config (options) {
  * @param {Object} options 
  * @param {string} key 
  */
-function validateOption(options, key) {
+function isValidOption(options, key) {
 	const value = options[key];
 	if (isUndefined(value)) {
 		return false;
