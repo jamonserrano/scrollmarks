@@ -426,6 +426,9 @@ function errorMessage(type, name, expected, actual) {
  * @param {number} options.idleTimeout
  */
 function config (options) {
+	if (!options) {
+		return {scrollThrottle, resizeThrottle, idleTimeout};
+	}
 	if (validateOption(options, 'scrollThrottle')) {
 		debugger;
 		scrollThrottle = options.scrollThrottle;
