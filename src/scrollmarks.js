@@ -426,36 +426,39 @@ function errorMessage(type, name, expected, actual) {
  * @param {number} options.idleTimeout
  */
 function config (options) {
-	const newScrollThrottle = options.scrollThrottle;
-	const newResizeThrottle = options.resizeThrottle;
-	const newIdleTimeout = options.idleTimeout;
-
-	if (!isNumber(newScrollThrottle)) {
-		throw new TypeError(errorMessage('Config', 'scrollThrottle', 'a number', newScrollThrottle));
-	} else if (newScrollThrottle < 0) {
-		throw new RangeError(errorMessage('Config', 'scrollThrottle', 'at least 0', newScrollThrottle));
-	} else {
-		scrollThrottle = newScrollThrottle;
+	if (validateOption(options, 'scrollThrottle')) {
+		debugger;
+		scrollThrottle = options.scrollThrottle;
 	}
 
-	if (!isNumber(newResizeThrottle)) {
-		throw new TypeError(errorMessage('Config', 'resizeThrottle', 'a number', newResizeThrottle));
-	} else if (newResizeThrottle < 0) {
-		throw new RangeError(errorMessage('Config', 'resizeThrottle', 'at least 0', newResizeThrottle));
-	} else {
-		resizeThrottle = newResizeThrottle;
+	if (validateOption(options, 'resizeThrottle')) {
+		resizeThrottle = options.resizeThrottle;
 	}
 
-	if (!isNumber(newIdleTimeout)) {
-		throw new TypeError(errorMessage('Config', 'idleTimeout', 'a number', newIdleTimeout));
-	} else if (newIdleTimeout < 1) {
-		throw new RangeError(errorMessage('Config', 'idleTimeout', 'a positive number', newIdleTimeout));
-	} else {
-		idleTimeout = newIdleTimeout;
+	if (validateOption(options, 'idleTimeout')) {
+		idleTimeout = options.idleTimeout;
 	}
 
 	if (running) {
 		resetTicks();
+	}
+}
+
+/**
+ * Validate a config option
+ * @param {Object} options 
+ * @param {string} key 
+ */
+function validateOption(options, key) {
+	const value = options[key];
+	if (isUndefined(value)) {
+		return false;
+	} else if (!isNumber(value)) {
+		throw new TypeError(errorMessage('Config', key, 'a number', value));
+	} else if (value < 0) {
+		throw new RangeError(errorMessage('Config', key, 'at least 0', value));
+	} else {
+		return true;
 	}
 }
 
