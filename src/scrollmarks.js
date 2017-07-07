@@ -91,12 +91,12 @@ function add (mark) {
 		throw new TypeError(errorMessage('Optional', 'offset', 'a number, a percentage, or a function', offset));
 	}
 	
-	if (direction && direction !== 'up' && direction !== 'down') {
+	if (!isUndefined(direction) && direction !== 'up' && direction !== 'down') {
 		throw new TypeError(errorMessage('Optional', 'direction', `'up' or 'down'`, direction));
 	}
 
-	if (!isUndefined(once) && once !== true) {
-		throw new TypeError(errorMessage('Optional', 'once', 'true', once));
+	if (!isUndefined(once) && typeof once !== 'boolean') {
+		throw new TypeError(errorMessage('Optional', 'once', 'boolean', once));
 	}
 
 	calculateTriggerPoint(mark);
