@@ -28,6 +28,7 @@
     "babel-preset-env": "^1.5.2",
     "chai": "^4.0.2",
     "karma": "^1.7.0",
+    "karma-calling": "^1.0.1",
     "karma-chai": "^0.1.0",
     "karma-chai-dom": "^1.1.0",
     "karma-chrome-launcher": "^2.2.0",
