@@ -108,7 +108,7 @@ function add (mark) {
 	if (!running) {
 		start();
 	} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
-		// don't wait until the next event to trigger the mark
+		// we don't know how we got to the current position so only trigger the mark if it's above and accepts downscroll
 		trigger(mark);
 	}
 
@@ -155,6 +155,7 @@ function stop () {
 		window.cancelAnimationFrame(clock);
 		
 		running = false;
+		previousScroll = 0;
 		resetTicks();
 	}
 }
