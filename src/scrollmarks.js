@@ -42,7 +42,7 @@ const documentElement = document.documentElement;
 let previousHeight = documentElement.scrollHeight;
 
 // browser supports idle callback
-const hasIdleCallback = window.requestIdleCallback;
+const hasIdleCallback = Boolean(window.requestIdleCallback);
 // maximum allowed timeout (configurable)
 let idleTimeout = 100;
 
