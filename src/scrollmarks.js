@@ -14,13 +14,13 @@ let index = 0;
 // queue for triggered marks
 let queue = [];
 
-// central clock
+// central clock, 0 when stopped, arbitrary number (the return value of requestAnimationFrame) when running
 let clock = 0;
 
 // document was scrolled
 let scrolled = false;	
 // frame counter for scroll events
-let scrollTick = 0;
+let scrollTick = 1;
 // throttle for scroll events (configurable)
 let scrollThrottle = 10;
 // previous scroll position;
@@ -31,7 +31,7 @@ let scrollDirection;
 // document was resized
 let resized = false;
 // frame counter for resize events
-let resizeTick = 0;
+let resizeTick = 1;
 // throttle for resize events (configurable)
 let resizeThrottle = 30;
 // documentElement cached
@@ -41,7 +41,7 @@ let previousHeight = documentElement.scrollHeight;
 
 // browser supports idle callback
 const hasIdleCallback = Boolean(window.requestIdleCallback);
-// maximum allowed timeout (configurable)
+// maximum allowed timeout (configurable, 0 to trigger instantly)
 let idleTimeout = 100;
 
 // event listener properties (false by default)
@@ -191,7 +191,7 @@ function checkState () {
 				previousHeight = height;
 			}
 		}
-		resizeTick = 0;
+		resizeTick = 1;
 	} else {
 		resizeTick++;
 	}
@@ -202,7 +202,7 @@ function checkState () {
 			checkMarks();
 			scrolled = false;
 		}
-		scrollTick = 0;
+		scrollTick = 1;
 	} else {
 		scrollTick++;
 	}
@@ -424,11 +424,12 @@ function errorMessage(type, name, expected, actual) {
  * @param {number} options.idleTimeout
  */
 function config (options) {
+	// get
 	if (isUndefined(options)) {
 		return {scrollThrottle, resizeThrottle, idleTimeout};
 	}
+	// set
 	if (isValidOption(options, 'scrollThrottle')) {
-		debugger;
 		scrollThrottle = options.scrollThrottle;
 	}
 
@@ -467,8 +468,8 @@ function isValidOption(options, key) {
  * Reset ticks
  */
 function resetTicks() {
-	scrollTick = 0;
-	resizeTick = 0;
+	scrollTick = 1;
+	resizeTick = 1;
 }
 
-export default {add, remove, start, stop, config, refresh};
+export default { add, remove, start, stop, config, refresh };
