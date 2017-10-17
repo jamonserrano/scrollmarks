@@ -256,7 +256,7 @@ function triggerQueue () {
  * @param {Object} mark 
  */
 function trigger(mark) {
-	mark.callback(mark, scrollDirection)
+	mark.callback(scrollDirection, mark)
 
 	if (mark.once) {
 		remove(mark.key);
