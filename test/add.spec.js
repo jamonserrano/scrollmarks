@@ -95,11 +95,20 @@ describe('ScrollMarks.add()', function () {
 			calling(ScrollMarks.add).with(params).should.not.throw();
 		});
 
-		it('should accept a percentage', function () {
+		it('should accept a percentage value', function () {
 			var params = {
 				element: this.element,
 				callback: this.callback,
 				offset: '25%'
+			};
+			calling(ScrollMarks.add).with(params).should.not.throw();
+		});
+
+		it('should accept a px value', function () {
+			var params = {
+				element: this.element,
+				callback: this.callback,
+				offset: '25px'
 			};
 			calling(ScrollMarks.add).with(params).should.not.throw();
 		});
@@ -113,7 +122,7 @@ describe('ScrollMarks.add()', function () {
 			calling(ScrollMarks.add).with(params).should.not.throw();
 		});
 
-		it('should not accept a non-pecentage string', function () {
+		it('should not accept any other string', function () {
 			var params = {
 				element: this.element,
 				callback: this.callback,

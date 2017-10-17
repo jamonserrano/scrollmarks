@@ -80,13 +80,15 @@ function add (mark) {
 	if (isUndefined(offset)) {
 		// default
 		mark.computedOffset = 0;
-	} else if (typeof offset === 'string' && offset.endsWith('%')) {
-		// generate function from percentage (viewport size can change)
-		mark.computedOffset = () => window.innerHeight * parseInt(offset) / 100;
 	} else if (isNumber(offset) || isFunction(offset)) {
 		mark.computedOffset = offset;
+	} else if (isString(offset) && offset.endsWith('%')) {
+		// generate function from percentage (viewport size can change)
+		mark.computedOffset = () => window.innerHeight * parseInt(offset) / 100;
+	} else if (isString(offset) && offset.endsWith('px')) {
+		mark.computedOffset = parseInt(offset);
 	} else {
-		throw new TypeError(errorMessage('Optional', 'offset', 'a number, a percentage, or a function', offset));
+		throw new TypeError(errorMessage('Optional', 'offset', 'a number, px, %, or a function', offset));
 	}
 	
 	if (!isUndefined(direction) && direction !== 'up' && direction !== 'down') {
@@ -384,6 +386,15 @@ function createfakeMap() {
  */
 function isNumber(value) {
 	return typeof value === 'number';
+}
+
+/**
+ * Checks if the value is a string
+ * @param {*} value
+ * @return {boolean}
+ */
+function isString(value) {
+	return typeof value === 'string';
 }
 
 /**
