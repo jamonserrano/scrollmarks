@@ -9,20 +9,20 @@ describe('ScrollMarks.remove()', function () {
 		ScrollMarks.remove.should.be.a('function');
 	});
 
-	it('should remove the mark', function () {
+	it('should return true on success', function () {
 		var mark = ScrollMarks.add({
 			element: document.getElementById('static'),
 			callback: function () {}
 		});
-		calling(ScrollMarks.remove).with(mark).should.not.throw();
+		ScrollMarks.remove(mark).should.be.true;
 	});
 
-	it('should throw error on nonexistent mark', function () {
-		calling(ScrollMarks.remove).with(98766).should.throw(ReferenceError);
+	it('should return false on a nonexistent mark', function () {
+		ScrollMarks.remove(98766).should.be.false;
 	});
 
-	it('should throw error on undefined mark', function () {
-		calling(ScrollMarks.remove).should.throw(ReferenceError);
+	it('should return false on an undefined mark', function () {
+		ScrollMarks.remove().should.be.false;
 	});
 	
 });

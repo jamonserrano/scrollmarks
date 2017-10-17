@@ -119,14 +119,14 @@ function add (mark) {
  * Remove a scrollmark
  * @public
  * @param {number} key
+ * @return {boolean} delete success
  */
 function remove (key) {
-	if (!scrollMarks.delete(key)) {
-		throw new ReferenceError(`Could not remove scrollmark '${key}', mark doesn't exist`);
-	}
+	const success = scrollMarks.delete(key);
 	if (!scrollMarks.size) {
 		stop();
 	}
+	return success;
 }
 
 /**
