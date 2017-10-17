@@ -5,6 +5,7 @@ describe('ScrollMarks.add()', function () {
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
 		this.callback = function () {};
+		this.timeout = (ScrollMarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
 		this.params = {
 			element: this.element,
 			callback: this.callback
@@ -17,6 +18,44 @@ describe('ScrollMarks.add()', function () {
 
 	it('should return a number', function () {
 		ScrollMarks.add({ element: this.element, callback: this.callback }).should.be.a('number');
+	});
+
+	describe('when called', function () {
+
+		it('should start listening', function (done) {
+			var callback = sinon.spy();
+			
+			window.scrollTo(0,0);
+			document.body.style.height = '200vh';
+			ScrollMarks.add({element: this.element, callback: callback});
+			window.scrollTo(0,100);
+
+			setTimeout(function () {
+				callback.should.have.been.calledOnce;
+				done();
+			}, this.timeout);
+		});
+
+		it('should trigger callback if element is passed and direction is not "up"', function (done) {
+			var callback = sinon.spy();
+			var downCallback = sinon.spy();
+			var upCallback = sinon.spy();
+
+			window.scrollTo(0,0);
+			document.body.style.height = '200vh';
+			window.scrollTo(0,100);
+			ScrollMarks.add({element: this.element, callback: callback});
+			ScrollMarks.add({element: this.element, callback: downCallback, direction: "down"});
+			ScrollMarks.add({element: this.element, callback: upCallback, direction: "up"});
+			
+			setTimeout(function () {
+				callback.should.have.been.calledOnce;
+				downCallback.should.have.been.calledOnce;
+				upCallback.should.not.have.been.called;
+				done();
+			}, this.timeout);
+		});
+
 	});
 	
 	describe('element parameter', function () {
@@ -69,7 +108,7 @@ describe('ScrollMarks.add()', function () {
 			var params = {
 				element: this.element,
 				callback: this.callback,
-				offset: () => {}
+				offset: function () {}
 			};
 			calling(ScrollMarks.add).with(params).should.not.throw();
 		});
@@ -142,6 +181,7 @@ describe('ScrollMarks.add()', function () {
 			};
 			calling(ScrollMarks.add).with(params).should.throw();
 		});
+
 	});
 
 });
