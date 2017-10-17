@@ -14,10 +14,8 @@ let index = 0;
 // queue for triggered marks
 let queue = [];
 
-// started state
-let running = false;
 // central clock
-let clock;
+let clock = 0;
 
 // document was scrolled
 let scrolled = false;	
@@ -105,7 +103,7 @@ function add (mark) {
 	mark.key = key;		
 	scrollMarks.set(key, mark);
 	
-	if (!running) {
+	if (clock === 0) {
 		start();
 	} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
 		// we don't know how we got to the current position so only trigger the mark if it's above and accepts downscroll
@@ -134,8 +132,7 @@ function remove (key) {
  * @public
  */
 function start () {
-	if (!running) {
-		running = true;
+	if (clock === 0) {
 		checkMarks();
 
 		window.addEventListener('scroll', onScroll, listenerProperties);
@@ -149,12 +146,12 @@ function start () {
  * @public
  */
 function stop () {
-	if (running) {
+	if (clock > 0) {
 		window.removeEventListener('scroll', onScroll, listenerProperties);
 		window.removeEventListener('resize', onResize, listenerProperties);
 		window.cancelAnimationFrame(clock);
 		
-		running = false;
+		clock = 0;
 		previousScroll = 0;
 		resetTicks();
 	}
@@ -443,7 +440,7 @@ function config (options) {
 		idleTimeout = options.idleTimeout;
 	}
 
-	if (running) {
+	if (clock > 0) {
 		resetTicks();
 	}
 }
