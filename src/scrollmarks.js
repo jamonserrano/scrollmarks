@@ -67,7 +67,7 @@ window.addEventListener("test", null, {
  * @return {number} key
  */
 function add (mark) {
-	const { element, callback, offset, direction, once } = mark;
+	const { element, callback, offset, direction, once, debug } = mark;
 
 	if (!(element instanceof HTMLElement)) {
 		throw new TypeError(errorMessage(false, 'element', 'an HTML Element', element));
@@ -82,10 +82,10 @@ function add (mark) {
 		mark.computedOffset = 0;
 	} else if (isNumber(offset) || isFunction(offset)) {
 		mark.computedOffset = offset;
-	} else if (isString(offset) && offset.endsWith('%')) {
+	} else if (isString(offset) && offset.slice(-1) === '%') {
 		// generate function from percentage (viewport size can change)
 		mark.computedOffset = () => window.innerHeight * parseInt(offset) / 100;
-	} else if (isString(offset) && offset.endsWith('px')) {
+	} else if (isString(offset) && offset.slice(-2) === 'px') {
 		mark.computedOffset = parseInt(offset);
 	} else {
 		throw new TypeError(errorMessage('Optional', 'offset', 'a number, px, %, or a function', offset));
@@ -99,12 +99,16 @@ function add (mark) {
 		throw new TypeError(errorMessage('Optional', 'once', 'boolean', once));
 	}
 
-	calculateTriggerPoint(mark);
+	if (!isUndefined(debug) && typeof debug !== 'boolean') {
+		throw new TypeError(errorMessage('Optional', 'debug', 'boolean', debug));
+	}
 	
 	const key = index++;
 	mark.key = key;		
 	scrollMarks.set(key, mark);
 	
+	calculateTriggerPoint(mark);
+
 	if (clock === 0) {
 		start();
 	} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
@@ -149,9 +153,9 @@ function start () {
  */
 function stop () {
 	if (clock > 0) {
+		window.cancelAnimationFrame(clock);
 		window.removeEventListener('scroll', onScroll, listenerProperties);
 		window.removeEventListener('resize', onResize, listenerProperties);
-		window.cancelAnimationFrame(clock);
 		
 		clock = 0;
 		previousScroll = 0;
@@ -308,6 +312,9 @@ function calculateTriggerPoint (mark) {
 	const computedOffset = mark.computedOffset;
 	const offsetValue = isFunction(computedOffset) ? computedOffset(mark.element) : computedOffset;
 	mark.triggerPoint = window.pageYOffset + mark.element.getBoundingClientRect().top - offsetValue;
+	if (mark.debug) {
+		setHelperElement(mark);
+	}
 }
 
 /**
@@ -326,7 +333,7 @@ function refresh(key) {
 }
 
 /**
- * Idle callback shim
+ * Idle callback
  * @param {Function} callback 
  */
 function idle(callback) {
@@ -337,6 +344,34 @@ function idle(callback) {
 	} else {
 		window.setTimeout(callback, 0);
 	}
+}
+
+function setHelperElement(mark) {
+	if (!mark.debug) {
+		return;
+	}
+
+	let helperElement = mark.helper;
+	if (!helperElement) {
+		helperElement = document.createElement('div');
+		Object.assign(helperElement.style, {
+			borderTop: '1px solid red',
+			color: 'red',
+			fontFamily: 'sans-serif',
+			fontSize: '14px',
+			left: '0',
+			minHeight: '20px',
+			padding: '3px',
+			position: 'absolute',
+			width: '100%'
+		});
+
+		mark.helper = helperElement;
+		document.body.appendChild(helperElement);
+	}
+
+	helperElement.style.top = `${mark.triggerPoint}px`;
+	helperElement.innerHTML = `offset: ${mark.offset}, computedOffset: ${typeof mark.computedOffset === 'function' ? mark.computedOffset(mark.element) : mark.computedOffset}, triggerPoint: ${mark.triggerPoint}px`;
 }
 
 /**
