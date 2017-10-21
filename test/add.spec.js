@@ -193,4 +193,28 @@ describe('ScrollMarks.add()', function () {
 
 	});
 
+	describe('debug parameter', function () {
+		it('should accept boolean', function () {
+			var params = {
+				element: this.element,
+				callback: this.callback,
+				debug: true
+			};
+			calling(ScrollMarks.add).with(params).should.not.throw();
+
+			params.debug = false;
+			calling(ScrollMarks.add).with(params).should.not.throw();
+
+		});
+
+		it('should not accept something else', function () {
+			var params = {
+				element: this.element,
+				callback: this.callback,
+				debug: 'true'
+			};
+			calling(ScrollMarks.add).with(params).should.throw();
+		});
+	});
+
 });
