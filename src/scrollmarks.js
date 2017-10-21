@@ -95,11 +95,11 @@ function add (mark) {
 		throw new TypeError(errorMessage('Optional', 'direction', `'up' or 'down'`, direction));
 	}
 
-	if (!isUndefined(once) && typeof once !== 'boolean') {
+	if (!(isUndefined(once) || isBoolean(once))) {
 		throw new TypeError(errorMessage('Optional', 'once', 'boolean', once));
 	}
 
-	if (!isUndefined(debug) && typeof debug !== 'boolean') {
+	if (!(isUndefined(debug) || isBoolean(debug))) {
 		throw new TypeError(errorMessage('Optional', 'debug', 'boolean', debug));
 	}
 	
@@ -371,7 +371,7 @@ function setHelperElement(mark) {
 	}
 
 	helperElement.style.top = `${mark.triggerPoint}px`;
-	helperElement.innerHTML = `offset: ${mark.offset}, computedOffset: ${typeof mark.computedOffset === 'function' ? mark.computedOffset(mark.element) : mark.computedOffset}, triggerPoint: ${mark.triggerPoint}px`;
+	helperElement.innerHTML = `offset: ${mark.offset}, computedOffset: ${isFunction(mark.computedOffset) ? mark.computedOffset(mark.element) : mark.computedOffset}, triggerPoint: ${mark.triggerPoint}px`;
 }
 
 /**
@@ -451,6 +451,15 @@ function isUndefined(value) {
 }
 
 /**
+ * Checks if the value is boolean
+ * @param {*} value
+ * @return {boolean}
+ */
+function isBoolean(value) {
+	return typeof value === 'boolean';
+}
+
+/**
  * Composes an error message
  * @param {string} type
  * @param {string} name
@@ -474,7 +483,7 @@ function errorMessage(type, name, expected, actual) {
 function config (options) {
 	// get
 	if (isUndefined(options)) {
-		return {scrollThrottle, resizeThrottle, idleTimeout};
+		return { scrollThrottle, resizeThrottle, idleTimeout };
 	}
 	// set
 	if (isValidOption(options, 'scrollThrottle')) {
