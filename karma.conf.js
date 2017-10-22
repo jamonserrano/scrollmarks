@@ -24,7 +24,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'scrollmarks.js': ['eslint'],
+      'lib/scrollmarks.js': ['eslint', 'coverage'],
 	    '**/*.html': ['html2js']
     },
 
@@ -32,7 +32,13 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots'],
+    reporters: ['dots', 'coverage'],
+
+    coverageReporter: {
+      reporters: [
+        { type: 'text-summary' }
+      ]
+    },
     
     // web server port
     port: 9876,
