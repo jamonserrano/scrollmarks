@@ -20,8 +20,8 @@ describe('ScrollMarks.start()', function () {
 
 	it('should start listening', function (done) {
 		var callback = sinon.spy();
-
-		ScrollMarks.add({element: this.element, callback: callback});
+		var mark = ScrollMarks.add({element: this.element, callback: callback});
+		
 		ScrollMarks.stop();
 		ScrollMarks.start();
 		
@@ -29,6 +29,7 @@ describe('ScrollMarks.start()', function () {
 
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;
+			ScrollMarks.remove(mark);
 			done();
 		}, this.timeout);
 	});
@@ -37,12 +38,13 @@ describe('ScrollMarks.start()', function () {
 		var callback = sinon.spy();
 		var downCallback = sinon.spy();
 		var upCallback = sinon.spy();
+		var marks = [];
 
 		window.scrollTo(0,0);
 		document.body.style.height = '200vh';
-		ScrollMarks.add({element: this.element, callback: callback});
-		ScrollMarks.add({element: this.element, callback: downCallback, direction: "down"});
-		ScrollMarks.add({element: this.element, callback: upCallback, direction: "up"});
+		marks.push(ScrollMarks.add({element: this.element, callback: callback}));
+		marks.push(ScrollMarks.add({element: this.element, callback: downCallback, direction: "down"}));
+		marks.push(ScrollMarks.add({element: this.element, callback: upCallback, direction: "up"}));
 		ScrollMarks.stop();
 		window.scrollTo(0,100);
 		ScrollMarks.start();
@@ -51,6 +53,9 @@ describe('ScrollMarks.start()', function () {
 			callback.should.have.been.calledOnce;
 			downCallback.should.have.been.calledOnce;
 			upCallback.should.not.have.been.called;
+			marks.forEach(function (mark) {
+				ScrollMarks.remove(mark);
+			})
 			done();
 		}, this.timeout);
 	});

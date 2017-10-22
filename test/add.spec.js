@@ -17,21 +17,26 @@ describe('ScrollMarks.add()', function () {
 	});
 
 	it('should return a number', function () {
-		ScrollMarks.add({ element: this.element, callback: this.callback }).should.be.a('number');
+		var mark = ScrollMarks.add({ element: this.element, callback: this.callback });
+		mark.should.be.a('number');
+		ScrollMarks.remove(mark);
+
 	});
 
 	describe('when called', function () {
 
 		it('should start listening', function (done) {
 			var callback = sinon.spy();
+			var mark;
 			
 			window.scrollTo(0,0);
 			document.body.style.height = '200vh';
-			ScrollMarks.add({element: this.element, callback: callback});
+			mark = ScrollMarks.add({element: this.element, callback: callback});
 			window.scrollTo(0,100);
 
 			setTimeout(function () {
 				callback.should.have.been.calledOnce;
+				ScrollMarks.remove(mark);
 				done();
 			}, this.timeout);
 		});
@@ -40,19 +45,23 @@ describe('ScrollMarks.add()', function () {
 			var callback = sinon.spy();
 			var downCallback = sinon.spy();
 			var upCallback = sinon.spy();
+			var marks = [];
 
 			window.scrollTo(0,0);
 			document.body.style.height = '200vh';
 			window.scrollTo(0,100);
-			ScrollMarks.add({element: this.element, callback: callback});
-			ScrollMarks.add({element: this.element, callback: downCallback, direction: "down"});
-			ScrollMarks.add({element: this.element, callback: upCallback, direction: "up"});
+			marks.push(ScrollMarks.add({element: this.element, callback: callback}));
+			marks.push(ScrollMarks.add({element: this.element, callback: downCallback, direction: "down"}));
+			marks.push(ScrollMarks.add({element: this.element, callback: upCallback, direction: "up"}));
 			
 			setTimeout(function () {
 				callback.should.have.been.calledOnce;
 				downCallback.should.have.been.calledOnce;
 				upCallback.should.not.have.been.called;
 				done();
+				marks.forEach(function (mark) {
+					ScrollMarks.remove(mark);
+				})
 			}, this.timeout);
 		});
 
@@ -65,7 +74,13 @@ describe('ScrollMarks.add()', function () {
 		});
 
 		it('should accept an HTML Element', function () {
-			calling(ScrollMarks.add).with(this.params).should.not.throw();
+			calling(function() {
+				var mark = ScrollMarks.add(this.params);
+				ScrollMarks.remove(mark);
+			}).on(this).should.not.throw();
+		});
+		
+		it('should not accept something else', function () {
 			calling(ScrollMarks.add).with({ element: "a", callback: this.callback }).should.throw(TypeError);
 		});
 
@@ -78,7 +93,13 @@ describe('ScrollMarks.add()', function () {
 		});
 
 		it('should accept a function', function () {
-			calling(ScrollMarks.add).with(this.params).should.not.throw();
+			calling(function() {
+				var mark = ScrollMarks.add(this.params);
+				ScrollMarks.remove(mark);
+			}).on(this).should.not.throw();
+		});
+		
+		it('should not accept something else', function () {
 			calling(ScrollMarks.add).with({ element: this.element, callback: "a" }).should.throw(TypeError);
 		});
 
@@ -92,7 +113,11 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				offset: 0
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 		});
 
 		it('should accept a percentage value', function () {
@@ -101,7 +126,11 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				offset: '25%'
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 		});
 
 		it('should accept a px value', function () {
@@ -110,8 +139,11 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				offset: '25px'
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
-		});
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();		});
 
 		it('should accept a function', function () {
 			var params = {
@@ -119,7 +151,11 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				offset: function () {}
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 		});
 
 		it('should not accept any other string', function () {
@@ -128,6 +164,7 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				offset: '25'
 			};
+			
 			calling(ScrollMarks.add).with(params).should.throw(TypeError);
 		});
 
@@ -141,7 +178,11 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				direction: 'up'
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 		});
 
 		it('should accept \'down\'', function () {
@@ -150,7 +191,11 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				direction: 'down'
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 		});
 
 		it('should not accept something else', function () {
@@ -159,9 +204,11 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				direction: true
 			};
+			
 			calling(ScrollMarks.add).with(params).should.throw();
 
 			params.direction = 'sideways';
+			
 			calling(ScrollMarks.add).with(params).should.throw();
 		});
 
@@ -169,16 +216,24 @@ describe('ScrollMarks.add()', function () {
 
 	describe('once parameter', function () {
 		
-		it('should accept boolean', function () {
+		it('should accept a boolean', function () {
 			var params = {
 				element: this.element,
 				callback: this.callback,
 				once: true
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 
 			params.once = false;
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 
 		});
 
@@ -188,6 +243,7 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				once: 'true'
 			};
+			
 			calling(ScrollMarks.add).with(params).should.throw();
 		});
 
@@ -200,11 +256,18 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				debug: true
 			};
-			calling(ScrollMarks.add).with(params).should.not.throw();
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 
 			params.debug = false;
-			calling(ScrollMarks.add).with(params).should.not.throw();
-
+			
+			calling(function() {
+				var mark = ScrollMarks.add(params);
+				ScrollMarks.remove(mark);
+			}).should.not.throw();
 		});
 
 		it('should not accept something else', function () {
@@ -213,6 +276,7 @@ describe('ScrollMarks.add()', function () {
 				callback: this.callback,
 				debug: 'true'
 			};
+			
 			calling(ScrollMarks.add).with(params).should.throw();
 		});
 	});

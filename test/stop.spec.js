@@ -7,9 +7,10 @@ describe('ScrollMarks.stop()', function () {
 		var element = document.getElementById('static');
 		var callback = sinon.spy();
 		var timeout = (ScrollMarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
-		
+		var mark;
+
 		ScrollMarks.start();
-		ScrollMarks.add({element: element, callback: callback});
+		mark = ScrollMarks.add({element: element, callback: callback});
 		
 		window.scrollTo(0, 100);
 		ScrollMarks.stop();
@@ -17,6 +18,7 @@ describe('ScrollMarks.stop()', function () {
 
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;
+			ScrollMarks.remove(mark);
 			done();
 		}, timeout);
 	});
