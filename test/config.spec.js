@@ -25,8 +25,8 @@ describe('ScrollMarks.config()', function () {
 	});
 
 	it('should not accept invalid params', function () {
-		calling(ScrollMarks.config).with({scrollThrottle: -1}).should.throw();
-		calling(ScrollMarks.config).with({resizeThrottle: -1}).should.throw();
+		calling(ScrollMarks.config).with({scrollThrottle: 0}).should.throw();
+		calling(ScrollMarks.config).with({resizeThrottle: 0}).should.throw();
 		calling(ScrollMarks.config).with({idleTimeout: -1}).should.throw();
 
 		calling(ScrollMarks.config).with({scrollThrottle: "a"}).should.throw();
