@@ -1,4 +1,4 @@
-/* eslint-env browser, es6 */
+/* eslint-env browser, es6, amd, commonjs */
 
 /*
  * Scrollmarks
