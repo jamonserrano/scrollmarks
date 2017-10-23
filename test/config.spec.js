@@ -25,12 +25,16 @@ describe('ScrollMarks.config()', function () {
 	});
 
 	it('should not accept invalid params', function () {
-		calling(ScrollMarks.config).with({scrollThrottle: 0}).should.throw();
-		calling(ScrollMarks.config).with({resizeThrottle: 0}).should.throw();
-		calling(ScrollMarks.config).with({idleTimeout: -1}).should.throw();
+		calling(ScrollMarks.config).with({ hello: 0 }).should.throw(ReferenceError);
+	});
 
-		calling(ScrollMarks.config).with({scrollThrottle: "a"}).should.throw();
-		calling(ScrollMarks.config).with({resizeThrottle: "a"}).should.throw();
-		calling(ScrollMarks.config).with({idleTimeout: "a"}).should.throw();
-	})
+	it('should not accept invalid values', function () {
+		calling(ScrollMarks.config).with({ scrollThrottle: 0 }).should.throw(RangeError);
+		calling(ScrollMarks.config).with({ resizeThrottle: 0 }).should.throw(RangeError);
+		calling(ScrollMarks.config).with({ idleTimeout: -1 }).should.throw(RangeError);
+
+		calling(ScrollMarks.config).with({ scrollThrottle: "a" }).should.throw(TypeError);
+		calling(ScrollMarks.config).with({ resizeThrottle: "a" }).should.throw(TypeError);
+		calling(ScrollMarks.config).with({ idleTimeout: "a" }).should.throw(TypeError);
+	});
 });
