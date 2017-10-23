@@ -507,7 +507,7 @@ function getSetConfig (params) {
  */
 function setOption (key, value) {
 	if (!['scrollThrottle', 'resizeThrottle', 'idleTimeout'].includes(key)) {
-		throw new ReferenceError(`Invalid config parameter ${key}`);
+		throw new ReferenceError(`Invalid config parameter: '${key}'`);
 	}
 	const lowerLimit = key === 'idleTimeout' ? 0 : 1;
 	if (!isNumber(value)) {
