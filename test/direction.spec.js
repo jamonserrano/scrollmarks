@@ -1,4 +1,4 @@
-describe('ScrollMarks.add()', function () {
+describe('Direction parameter', function () {
 	
 	before(function () {
 		fixture.setBase("test/fixtures");
