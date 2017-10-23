@@ -1,4 +1,4 @@
-describe('ScrollMarks.remove()', function () {
+describe('Scrollmarks.remove()', function () {
 	
 	before(function () {
 		fixture.setBase("test/fixtures");
@@ -6,23 +6,23 @@ describe('ScrollMarks.remove()', function () {
 	});
 
 	it('should exist', function () {
-		ScrollMarks.remove.should.be.a('function');
+		Scrollmarks.remove.should.be.a('function');
 	});
 
 	it('should return true on success', function () {
-		var mark = ScrollMarks.add({
+		var mark = Scrollmarks.add({
 			element: document.getElementById('static'),
 			callback: function () {}
 		});
-		ScrollMarks.remove(mark).should.be.true;
+		Scrollmarks.remove(mark).should.be.true;
 	});
 
 	it('should return false on a nonexistent mark', function () {
-		ScrollMarks.remove(98766).should.be.false;
+		Scrollmarks.remove(98766).should.be.false;
 	});
 
 	it('should return false on an undefined mark', function () {
-		ScrollMarks.remove().should.be.false;
+		Scrollmarks.remove().should.be.false;
 	});
 	
 });

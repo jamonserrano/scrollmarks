@@ -1,24 +1,24 @@
-describe('ScrollMarks.stop()', function () {
+describe('Scrollmarks.stop()', function () {
 	it('should exist', function () {
-		ScrollMarks.stop.should.be.a('function');
+		Scrollmarks.stop.should.be.a('function');
 	});
 
 	it('should stop listening', function (done) {
 		var element = document.getElementById('static');
 		var callback = sinon.spy();
-		var timeout = (ScrollMarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
+		var timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
 		var mark;
 
-		ScrollMarks.start();
-		mark = ScrollMarks.add({element: element, callback: callback});
+		Scrollmarks.start();
+		mark = Scrollmarks.add({element: element, callback: callback});
 		
 		window.scrollTo(0, 100);
-		ScrollMarks.stop();
+		Scrollmarks.stop();
 		window.scrollTo(0, 0);
 
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;
-			ScrollMarks.remove(mark);
+			Scrollmarks.remove(mark);
 			done();
 		}, timeout);
 	});

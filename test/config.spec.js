@@ -1,13 +1,13 @@
-describe('ScrollMarks.config()', function () {
+describe('Scrollmarks.config()', function () {
 	it('should return the config when called without params', function () {
-		var result = ScrollMarks.config();
+		var result = Scrollmarks.config();
 		result.scrollThrottle.should.be.a('number');
 		result.resizeThrottle.should.be.a('number');
 		result.idleTimeout.should.be.a('number');
 	});
 
 	it('should set the config when called with params', function () {
-		var defaultConfig = ScrollMarks.config();
+		var defaultConfig = Scrollmarks.config();
 		var expected = {
 			scrollThrottle: 999,
 			resizeThrottle: 888,
@@ -15,26 +15,26 @@ describe('ScrollMarks.config()', function () {
 		},
 		result;
 
-		ScrollMarks.config(expected);
-		result = ScrollMarks.config();
+		Scrollmarks.config(expected);
+		result = Scrollmarks.config();
 		result.scrollThrottle.should.equal(expected.scrollThrottle);
 		result.resizeThrottle.should.equal(expected.resizeThrottle);
 		result.idleTimeout.should.equal(expected.idleTimeout);
 
-		ScrollMarks.config(defaultConfig);
+		Scrollmarks.config(defaultConfig);
 	});
 
 	it('should not accept invalid params', function () {
-		calling(ScrollMarks.config).with({ hello: 0 }).should.throw(ReferenceError);
+		calling(Scrollmarks.config).with({ hello: 0 }).should.throw(ReferenceError);
 	});
 
 	it('should not accept invalid values', function () {
-		calling(ScrollMarks.config).with({ scrollThrottle: 0 }).should.throw(RangeError);
-		calling(ScrollMarks.config).with({ resizeThrottle: 0 }).should.throw(RangeError);
-		calling(ScrollMarks.config).with({ idleTimeout: -1 }).should.throw(RangeError);
+		calling(Scrollmarks.config).with({ scrollThrottle: 0 }).should.throw(RangeError);
+		calling(Scrollmarks.config).with({ resizeThrottle: 0 }).should.throw(RangeError);
+		calling(Scrollmarks.config).with({ idleTimeout: -1 }).should.throw(RangeError);
 
-		calling(ScrollMarks.config).with({ scrollThrottle: "a" }).should.throw(TypeError);
-		calling(ScrollMarks.config).with({ resizeThrottle: "a" }).should.throw(TypeError);
-		calling(ScrollMarks.config).with({ idleTimeout: "a" }).should.throw(TypeError);
+		calling(Scrollmarks.config).with({ scrollThrottle: "a" }).should.throw(TypeError);
+		calling(Scrollmarks.config).with({ resizeThrottle: "a" }).should.throw(TypeError);
+		calling(Scrollmarks.config).with({ idleTimeout: "a" }).should.throw(TypeError);
 	});
 });
