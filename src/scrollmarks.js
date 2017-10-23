@@ -349,10 +349,6 @@ function idle(callback) {
 }
 
 function setHelperElement(mark) {
-	if (!mark.debug) {
-		return;
-	}
-
 	let helperElement = mark.helper;
 	if (!helperElement) {
 		helperElement = document.createElement('div');
