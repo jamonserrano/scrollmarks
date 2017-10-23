@@ -159,6 +159,8 @@ function stop () {
 		
 		clock = 0;
 		previousScroll = 0;
+		scrolled = false;
+		resized = false;
 		resetTicks();
 	}
 }
