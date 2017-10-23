@@ -17,12 +17,20 @@ let queue = [];
 // central clock, 0 when stopped, arbitrary number (the return value of requestAnimationFrame) when running
 let clock = 0;
 
+// configuration
+const config = {
+	// throttle for scroll events (configurable)
+	scrollThrottle: 10,
+	// throttle for resize events (configurable)
+	resizeThrottle: 30,
+	// maximum allowed timeout (configurable, 0 to trigger instantly)
+	idleTimeout: 100
+};
+
 // document was scrolled
-let scrolled = false;	
+let scrolled = false;
 // frame counter for scroll events
 let scrollTick = 1;
-// throttle for scroll events (configurable)
-let scrollThrottle = 10;
 // previous scroll position;
 let previousScroll = 0;
 // scroll direction
@@ -32,8 +40,6 @@ let scrollDirection;
 let resized = false;
 // frame counter for resize events
 let resizeTick = 1;
-// throttle for resize events (configurable)
-let resizeThrottle = 30;
 // documentElement cached
 const documentElement = document.documentElement;
 // previous document height
@@ -41,8 +47,6 @@ let previousHeight = documentElement.scrollHeight;
 
 // browser supports idle callback
 const hasIdleCallback = Boolean(window.requestIdleCallback);
-// maximum allowed timeout (configurable, 0 to trigger instantly)
-let idleTimeout = 100;
 
 // event listener properties (false by default)
 let listenerProperties = false;
@@ -72,11 +76,11 @@ function add (mark) {
 	if (!(element instanceof HTMLElement)) {
 		throw new TypeError(errorMessage(false, 'element', 'an HTML Element', element));
 	}
-	
+
 	if (!isFunction(callback)) {
 		throw new TypeError(errorMessage(false, 'callback', 'a function', callback));
 	}
-	
+
 	if (isUndefined(offset)) {
 		// default
 		mark.computedOffset = 0;
@@ -90,7 +94,7 @@ function add (mark) {
 	} else {
 		throw new TypeError(errorMessage('Optional', 'offset', 'a number, px, %, or a function', offset));
 	}
-	
+
 	if (!isUndefined(direction) && direction !== 'up' && direction !== 'down') {
 		throw new TypeError(errorMessage('Optional', 'direction', `'up' or 'down'`, direction));
 	}
@@ -102,11 +106,11 @@ function add (mark) {
 	if (!(isUndefined(debug) || isBoolean(debug))) {
 		throw new TypeError(errorMessage('Optional', 'debug', 'boolean', debug));
 	}
-	
+
 	const key = index++;
-	mark.key = key;		
+	mark.key = key;
 	scrollMarks.set(key, mark);
-	
+
 	calculateTriggerPoint(mark);
 
 	if (clock === 0) {
@@ -156,7 +160,7 @@ function stop () {
 		window.cancelAnimationFrame(clock);
 		window.removeEventListener('scroll', onScroll, listenerProperties);
 		window.removeEventListener('resize', onResize, listenerProperties);
-		
+
 		clock = 0;
 		previousScroll = 0;
 		scrolled = false;
@@ -186,7 +190,7 @@ function onResize () {
  */
 function checkState () {
 	// resize check
-	if (resizeTick === resizeThrottle) {
+	if (resizeTick === config.resizeThrottle) {
 		if (resized) {
 			// document was resized
 			idle(updateTriggerPoints);
@@ -205,7 +209,7 @@ function checkState () {
 	}
 
 	// scroll check
-	if (scrollTick === scrollThrottle) {
+	if (scrollTick === config.scrollThrottle) {
 		if (scrolled) {
 			checkMarks();
 			scrolled = false;
@@ -226,7 +230,7 @@ function checkMarks () {
 	// get scroll position and direction
 	const currentScroll = window.pageYOffset;
 	scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
-	
+
 	scrollMarks.forEach((mark) => {
 		const markDirection = mark.direction;
 		// 1st check: element is visible and direction matches (or not defined)
@@ -259,9 +263,9 @@ function triggerQueue () {
 
 /**
  * Trigger a single mark
- * @param {Object} mark 
+ * @param {Object} mark
  */
-function trigger(mark) {
+function trigger (mark) {
 	mark.callback(scrollDirection, mark)
 
 	if (mark.once) {
@@ -271,31 +275,31 @@ function trigger(mark) {
 
 /**
  * Sort by ascending triggerpoints
- * @param {Object} a mark 
+ * @param {Object} a mark
  * @param {Object} b mark
  * @return {number}
  */
-function sortAscending (a,b) {
+function sortAscending (a, b) {
 	return a.triggerPoint - b.triggerPoint;
 }
 
 /**
  * Sort by descending triggerpoints
- * @param {Object} a mark 
+ * @param {Object} a mark
  * @param {Object} b mark
  * @return {number}
  */
-function sortDescending (a,b) {
+function sortDescending (a, b) {
 	return b.triggerPoint - a.triggerPoint;
 }
 
 /**
  * Check if the mark's direction matches the current (or provided) scroll direction
- * @param {('up'|'down'|undefined)} markDirection 
+ * @param {('up'|'down'|undefined)} markDirection
  * @param {('up'|'down')} [direction]
  * @return {boolean} match
  */
-function directionMatches(markDirection, direction) {
+function directionMatches (markDirection, direction) {
 	return !markDirection || markDirection === (direction || scrollDirection);
 }
 
@@ -308,7 +312,7 @@ function updateTriggerPoints () {
 
 /**
  * Calculate a trigger point
- * @param {Object} mark 
+ * @param {Object} mark
  */
 function calculateTriggerPoint (mark) {
 	const computedOffset = mark.computedOffset;
@@ -322,9 +326,9 @@ function calculateTriggerPoint (mark) {
 /**
  * Refresh one or all marks
  * @public
- * @param {number} [key] 
+ * @param {number} [key]
  */
-function refresh(key) {
+function refresh (key) {
 	if (isUndefined(key)) {
 		idle(updateTriggerPoints);
 	} else if (scrollMarks.has(key)) {
@@ -336,19 +340,20 @@ function refresh(key) {
 
 /**
  * Idle callback
- * @param {Function} callback 
+ * @param {Function} callback
  */
-function idle(callback) {
+function idle (callback) {
+	const idleTimeout = config.idleTimeout;
 	if (idleTimeout === 0) {
 		callback();
 	} else if (hasIdleCallback) {
-		window.requestIdleCallback(callback, {timeout: idleTimeout});
+		window.requestIdleCallback(callback, { timeout: idleTimeout });
 	} else {
 		window.setTimeout(callback, 0);
 	}
 }
 
-function setHelperElement(mark) {
+function setHelperElement (mark) {
 	let helperElement = mark.helper;
 	if (!helperElement) {
 		helperElement = document.createElement('div');
@@ -376,7 +381,7 @@ function setHelperElement(mark) {
  * Create a fake Map object
  * @return {Object}
  */
-function createfakeMap() {
+function createfakeMap () {
 	return Object.defineProperties({}, {
 		'delete': {
 			value: function (key) {
@@ -414,10 +419,10 @@ function createfakeMap() {
 
 /**
  * Checks if the value is a number
- * @param {*} value 
+ * @param {*} value
  * @return {boolean}
  */
-function isNumber(value) {
+function isNumber (value) {
 	return typeof value === 'number';
 }
 
@@ -426,25 +431,25 @@ function isNumber(value) {
  * @param {*} value
  * @return {boolean}
  */
-function isString(value) {
+function isString (value) {
 	return typeof value === 'string';
 }
 
 /**
  * Checks if the value is a function
- * @param {*} value 
+ * @param {*} value
  * @return {boolean}
  */
-function isFunction(value) {
+function isFunction (value) {
 	return typeof value === 'function';
 }
 
 /**
  * Checks if the value is undefined
- * @param {*} value 
+ * @param {*} value
  * @return {boolean}
  */
-function isUndefined(value) {
+function isUndefined (value) {
 	return value === undefined;
 }
 
@@ -453,7 +458,7 @@ function isUndefined(value) {
  * @param {*} value
  * @return {boolean}
  */
-function isBoolean(value) {
+function isBoolean (value) {
 	return typeof value === 'boolean';
 }
 
@@ -465,7 +470,7 @@ function isBoolean(value) {
  * @param {*} actual
  * @return {string}
  */
-function errorMessage(type, name, expected, actual) {
+function errorMessage (type, name, expected, actual) {
 	const param = type ? ' parameter' : 'Parameter';
 	return `${type}${param} '${name}' must be ${expected}, got ${actual} instead`;
 }
@@ -473,28 +478,22 @@ function errorMessage(type, name, expected, actual) {
 /**
  * Set options
  * @public
- * @param {Object} options 
+ * @param {Object} params
  * @param {number} options.scrollThrottle
  * @param {number} options.resizeThrottle
  * @param {number} options.idleTimeout
  */
-function config (options) {
+function getSetConfig (params) {
 	// get
-	if (isUndefined(options)) {
-		return { scrollThrottle, resizeThrottle, idleTimeout };
+	if (isUndefined(params)) {
+		return {
+			scrollThrottle: config.scrollThrottle,
+			resizeThrottle: config.resizeThrottle,
+			idleTimeout: config.idleTimeout
+		 };
 	}
 	// set
-	if (isValidOption(options, 'scrollThrottle')) {
-		scrollThrottle = options.scrollThrottle;
-	}
-
-	if (isValidOption(options, 'resizeThrottle')) {
-		resizeThrottle = options.resizeThrottle;
-	}
-
-	if (isValidOption(options, 'idleTimeout')) {
-		idleTimeout = options.idleTimeout;
-	}
+	Object.keys(params).forEach((key) => setOption(key, params[key]));
 
 	if (clock > 0) {
 		resetTicks();
@@ -502,30 +501,30 @@ function config (options) {
 }
 
 /**
- * Validate a config option
- * @param {Object} options 
- * @param {string} key 
+ * Set a config value
+ * @param {string} key
+ * @param {number} value
  */
-function isValidOption(options, key) {
-	const value = options[key];
-	const lowerLimit = key === 'idleTimeout' ? 0 : 1;	
-	if (isUndefined(value)) {
-		return false;
-	} else if (!isNumber(value)) {
+function setOption (key, value) {
+	if (!['scrollThrottle', 'resizeThrottle', 'idleTimeout'].includes(key)) {
+		throw new ReferenceError(`Invalid config parameter ${key}`);
+	}
+	const lowerLimit = key === 'idleTimeout' ? 0 : 1;
+	if (!isNumber(value)) {
 		throw new TypeError(errorMessage('Config', key, 'a number', value));
 	} else if (value < lowerLimit) {
 		throw new RangeError(errorMessage('Config', key, `at least ${lowerLimit}`, value));
 	} else {
-		return true;
+		config[key] = value;
 	}
 }
 
 /**
  * Reset ticks
  */
-function resetTicks() {
+function resetTicks () {
 	scrollTick = 1;
 	resizeTick = 1;
 }
 
-export default { add, remove, start, stop, config, refresh };
+export default { add, remove, start, stop, refresh, config: getSetConfig };
