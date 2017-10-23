@@ -3,8 +3,6 @@ describe('ScrollMarks.refresh()', function () {
 			fixture.setBase("test/fixtures");
 			fixture.load("multiple_elements.html");
 			
-			ScrollMarks.config({ idleTimeout: 0 });
-
 			this.offset1 = sinon.spy(function () {
 				return 20;
 			});

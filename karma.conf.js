@@ -16,6 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'lib/scrollmarks.js',
+      'test/helpers/test_config.js',
       'test/*.spec.js',
       'test/fixtures/**/*'
     ],
@@ -36,6 +37,7 @@ module.exports = function(config) {
 
     coverageReporter: {
       reporters: [
+        { type: 'html'},
         { type: 'text-summary' }
       ]
     },
