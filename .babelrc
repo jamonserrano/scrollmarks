@@ -11,7 +11,7 @@
     "transform-es2015-modules-umd",
     "array-includes",
     ["rename-umd-globals", {
-      "scrollmarks": "ScrollMarks"
+      "scrollmarks": "Scrollmarks"
     }]
   ]
 }
