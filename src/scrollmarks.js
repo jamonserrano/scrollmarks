@@ -355,9 +355,10 @@ function idle (callback) {
 
 function setHelperElement (mark) {
 	let helperElement = mark.helper;
+	
 	if (!helperElement) {
 		helperElement = document.createElement('div');
-		Object.assign(helperElement.style, {
+		const properties = {
 			borderTop: '1px solid red',
 			color: 'red',
 			fontFamily: 'sans-serif',
@@ -367,7 +368,9 @@ function setHelperElement (mark) {
 			padding: '3px',
 			position: 'absolute',
 			width: '100%'
-		});
+		};
+
+		Object.keys(properties).forEach((property) => helperElement.style[property] = properties[property]);
 
 		mark.helper = helperElement;
 		document.body.appendChild(helperElement);
