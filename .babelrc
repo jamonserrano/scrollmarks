@@ -13,5 +13,6 @@
     ["rename-umd-globals", {
       "scrollmarks": "Scrollmarks"
     }]
-  ]
+  ],
+  "comments": false
 }
