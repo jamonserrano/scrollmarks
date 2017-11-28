@@ -16,59 +16,43 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	/* eslint-env browser, es6, amd, commonjs */
 
-	/*
-  * Scrollmarks
-  * Copyright (c) 2017 Viktor Honti
-  * Licensed under the MIT License.
-  * https://github.com/jamonserrano/scrollmarks
-  */
-
-	// store for scrollmarks
 	var scrollMarks = window.Map ? new Map() : createfakeMap();
-	// index of scrollmarks
+
 	var index = 0;
-	// queue for triggered marks
+
 	var queue = [];
 
-	// central clock, 0 when stopped, arbitrary number (the return value of requestAnimationFrame) when running
 	var clock = 0;
 
-	// configuration
 	var config = {
-		// throttle for scroll events (configurable)
 		scrollThrottle: 10,
-		// throttle for resize events (configurable)
+
 		resizeThrottle: 30,
-		// maximum allowed timeout (configurable, 0 to trigger instantly)
+
 		idleTimeout: 100
 	};
 
-	// document was scrolled
 	var scrolled = false;
-	// frame counter for scroll events
+
 	var scrollTick = 1;
-	// previous scroll position;
+
 	var previousScroll = 0;
-	// scroll direction
+
 	var scrollDirection = void 0;
 
-	// document was resized
 	var resized = false;
-	// frame counter for resize events
+
 	var resizeTick = 1;
-	// documentElement cached
+
 	var documentElement = document.documentElement;
-	// previous document height
+
 	var previousHeight = documentElement.scrollHeight;
 
-	// browser supports idle callback
 	var hasIdleCallback = Boolean(window.requestIdleCallback);
 
-	// event listener properties (false by default)
 	var listenerProperties = false;
-	// set passive listener if available
+
 	window.addEventListener("test", null, {
 		get passive() {
 			listenerProperties = {
@@ -77,17 +61,6 @@
 		}
 	});
 
-	/**
-  * Add a new scrollmark
-  * @public
-  * @param {Object} mark
-  * @param {HTMLElement} mark.element
-  * @param {Function} mark.callback
-  * @param {(number|string|function)} [mark.offset]
-  * @param {('up'|'down')} [mark.direction]
-  * @param {boolean} [mark.once]
-  * @return {number} key
-  */
 	function add(mark) {
 		var element = mark.element,
 		    callback = mark.callback,
@@ -106,12 +79,10 @@
 		}
 
 		if (isUndefined(offset)) {
-			// default
 			mark.computedOffset = 0;
 		} else if (isNumber(offset) || isFunction(offset)) {
 			mark.computedOffset = offset;
 		} else if (isString(offset) && offset.slice(-1) === '%') {
-			// generate function from percentage (viewport size can change)
 			mark.computedOffset = function () {
 				return window.innerHeight * parseInt(offset) / 100;
 			};
@@ -142,19 +113,12 @@
 		if (clock === 0) {
 			start();
 		} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
-			// we don't know how we got to the current position so only trigger the mark if it's above and accepts downscroll
 			trigger(mark);
 		}
 
 		return key;
 	}
 
-	/**
-  * Remove a scrollmark
-  * @public
-  * @param {number} key
-  * @return {boolean} delete success
-  */
 	function remove(key) {
 		var success = scrollMarks.delete(key);
 		if (!scrollMarks.size) {
@@ -163,10 +127,6 @@
 		return success;
 	}
 
-	/**
-  * Start listening
-  * @public
-  */
 	function start() {
 		if (clock === 0) {
 			checkMarks();
@@ -177,10 +137,6 @@
 		}
 	}
 
-	/**
-  * Stop listening
-  * @public
-  */
 	function stop() {
 		if (clock > 0) {
 			window.cancelAnimationFrame(clock);
@@ -195,38 +151,24 @@
 		}
 	}
 
-	/**
-  * Scroll event listener
-  * Sets the scrolled flag for the clock
-  */
 	function onScroll() {
 		window.requestAnimationFrame(function () {
 			return scrolled = true;
 		});
 	}
 
-	/**
-  * Resize listener
-  * Sets the resized flag for the clock
-  */
 	function onResize() {
 		window.requestAnimationFrame(function () {
 			return resized = true;
 		});
 	}
 
-	/**
-  * Single handler for scroll, document height, and page resize
-  */
 	function checkState() {
-		// resize check
 		if (resizeTick === config.resizeThrottle) {
 			if (resized) {
-				// document was resized
 				idle(updateTriggerPoints);
 				resized = false;
 			} else {
-				// check the height
 				var height = documentElement.scrollHeight;
 				if (previousHeight !== height) {
 					idle(updateTriggerPoints);
@@ -238,7 +180,6 @@
 			resizeTick++;
 		}
 
-		// scroll check
 		if (scrollTick === config.scrollThrottle) {
 			if (scrolled) {
 				checkMarks();
@@ -252,48 +193,35 @@
 		clock = window.requestAnimationFrame(checkState);
 	}
 
-	/**
-  * Checks if scrollmarks should be triggered
-  */
 	function checkMarks() {
-		// get scroll position and direction
 		var currentScroll = window.pageYOffset;
 		scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
 
 		scrollMarks.forEach(function (mark) {
 			var markDirection = mark.direction;
-			// 1st check: element is visible and direction matches (or not defined)
+
 			if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
 				var triggerPoint = mark.triggerPoint;
-				// 2nd check: element actually crossed the mark (below -> above or above -> below)
+
 				if (previousScroll < triggerPoint === triggerPoint <= currentScroll) {
-					// mark should be triggered
 					queue.push(mark);
 				}
 			}
 		});
-		// trigger affected marks
+
 		triggerQueue();
-		// prepare for next run
+
 		previousScroll = currentScroll;
 	}
 
-	/**
-  * Trigger affected scrollmarks
-  */
 	function triggerQueue() {
-		// put trigger marks in order
 		queue.sort(scrollDirection === 'down' ? sortAscending : sortDescending);
-		// call each mark
+
 		queue.forEach(trigger);
-		// empty queue
+
 		queue = [];
 	}
 
-	/**
-  * Trigger a single mark
-  * @param {Object} mark
-  */
 	function trigger(mark) {
 		mark.callback(scrollDirection, mark);
 
@@ -302,47 +230,22 @@
 		}
 	}
 
-	/**
-  * Sort by ascending triggerpoints
-  * @param {Object} a mark
-  * @param {Object} b mark
-  * @return {number}
-  */
 	function sortAscending(a, b) {
 		return a.triggerPoint - b.triggerPoint;
 	}
 
-	/**
-  * Sort by descending triggerpoints
-  * @param {Object} a mark
-  * @param {Object} b mark
-  * @return {number}
-  */
 	function sortDescending(a, b) {
 		return b.triggerPoint - a.triggerPoint;
 	}
 
-	/**
-  * Check if the mark's direction matches the current (or provided) scroll direction
-  * @param {('up'|'down'|undefined)} markDirection
-  * @param {('up'|'down')} [direction]
-  * @return {boolean} match
-  */
 	function directionMatches(markDirection, direction) {
 		return !markDirection || markDirection === (direction || scrollDirection);
 	}
 
-	/**
-  * Update all trigger points
-  */
 	function updateTriggerPoints() {
 		scrollMarks.forEach(calculateTriggerPoint);
 	}
 
-	/**
-  * Calculate a trigger point
-  * @param {Object} mark
-  */
 	function calculateTriggerPoint(mark) {
 		var computedOffset = mark.computedOffset;
 		var offsetValue = isFunction(computedOffset) ? computedOffset(mark.element) : computedOffset;
@@ -352,11 +255,6 @@
 		}
 	}
 
-	/**
-  * Refresh one or all marks
-  * @public
-  * @param {number} [key]
-  */
 	function refresh(key) {
 		if (isUndefined(key)) {
 			idle(updateTriggerPoints);
@@ -369,10 +267,6 @@
 		}
 	}
 
-	/**
-  * Idle callback
-  * @param {Function} callback
-  */
 	function idle(callback) {
 		var idleTimeout = config.idleTimeout;
 		if (idleTimeout === 0) {
@@ -413,10 +307,6 @@
 		helperElement.innerHTML = 'offset: ' + mark.offset + ', computedOffset: ' + (isFunction(mark.computedOffset) ? mark.computedOffset(mark.element) : mark.computedOffset) + ', triggerPoint: ' + mark.triggerPoint + 'px';
 	}
 
-	/**
-  * Create a fake Map object
-  * @return {Object}
-  */
 	function createfakeMap() {
 		return Object.defineProperties({}, {
 			'delete': {
@@ -457,74 +347,32 @@
 		});
 	}
 
-	/**
-  * Checks if the value is a number
-  * @param {*} value
-  * @return {boolean}
-  */
 	function isNumber(value) {
 		return typeof value === 'number';
 	}
 
-	/**
-  * Checks if the value is a string
-  * @param {*} value
-  * @return {boolean}
-  */
 	function isString(value) {
 		return typeof value === 'string';
 	}
 
-	/**
-  * Checks if the value is a function
-  * @param {*} value
-  * @return {boolean}
-  */
 	function isFunction(value) {
 		return typeof value === 'function';
 	}
 
-	/**
-  * Checks if the value is undefined
-  * @param {*} value
-  * @return {boolean}
-  */
 	function isUndefined(value) {
 		return value === undefined;
 	}
 
-	/**
-  * Checks if the value is boolean
-  * @param {*} value
-  * @return {boolean}
-  */
 	function isBoolean(value) {
 		return typeof value === 'boolean';
 	}
 
-	/**
-  * Composes an error message
-  * @param {string} type
-  * @param {string} name
-  * @param {string} expected
-  * @param {*} actual
-  * @return {string}
-  */
 	function errorMessage(type, name, expected, actual) {
 		var param = type ? ' parameter' : 'Parameter';
 		return '' + type + param + ' \'' + name + '\' must be ' + expected + ', got ' + actual + ' instead';
 	}
 
-	/**
-  * Set options
-  * @public
-  * @param {Object} params
-  * @param {number} options.scrollThrottle
-  * @param {number} options.resizeThrottle
-  * @param {number} options.idleTimeout
-  */
 	function getSetConfig(params) {
-		// get
 		if (isUndefined(params)) {
 			return {
 				scrollThrottle: config.scrollThrottle,
@@ -532,7 +380,7 @@
 				idleTimeout: config.idleTimeout
 			};
 		}
-		// set
+
 		Object.keys(params).forEach(function (key) {
 			return setOption(key, params[key]);
 		});
@@ -542,11 +390,6 @@
 		}
 	}
 
-	/**
-  * Set a config value
-  * @param {string} key
-  * @param {number} value
-  */
 	function setOption(key, value) {
 		if (!(['scrollThrottle', 'resizeThrottle', 'idleTimeout'].indexOf(key) !== -1)) {
 			throw new ReferenceError('Invalid config parameter: \'' + key + '\'');
@@ -561,9 +404,6 @@
 		}
 	}
 
-	/**
-  * Reset ticks
-  */
 	function resetTicks() {
 		scrollTick = 1;
 		resizeTick = 1;

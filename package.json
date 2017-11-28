@@ -2,11 +2,11 @@
   "name": "scrollmarks",
   "version": "0.1.0",
   "description": "",
-  "main": "lib/scrollmarks.js",
+  "main": "dist/scrollmarks.js",
   "module": "src/scrollmarks.js",
   "scripts": {
     "test": "karma start --single-run",
-    "start": "babel src/scrollmarks.js --watch --out-file lib/scrollmarks.js"
+    "start": "babel src/scrollmarks.js --watch --out-file dist/scrollmarks.js"
   },
   "repository": {
     "type": "git",

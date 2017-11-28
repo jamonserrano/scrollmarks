@@ -68,6 +68,7 @@ window.addEventListener("test", null, {
  * @param {(number|string|function)} [mark.offset]
  * @param {('up'|'down')} [mark.direction]
  * @param {boolean} [mark.once]
+ * @param {boolean} [mark.debug]
  * @return {number} key
  */
 function add (mark) {
