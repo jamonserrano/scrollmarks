@@ -3,7 +3,14 @@
         "browser": true,
         "commonjs": true,
         "es6": true,
-        "node": true
+        "node": true,
+        "mocha": true
+    },
+    "globals": {
+        "Scrollmarks": true,
+        "calling": true,
+        "fixture": true,
+        "sinon": true
     },
     "parserOptions": {
         "ecmaFeatures": {
