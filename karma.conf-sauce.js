@@ -23,7 +23,7 @@ module.exports = function(config) {
   
 	  // list of files / patterns to load in the browser
 	  files: [
-		'lib/scrollmarks.js',
+		'dist/scrollmarks.js',
 		'test/helpers/test_config.js',
 		'test/*.spec.js',
 		'test/fixtures/**/*'
@@ -32,7 +32,7 @@ module.exports = function(config) {
 	  // preprocess matching files before serving them to the browser
 	  // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'lib/scrollmarks.js': ['eslint', 'coverage'],
+      'dist/scrollmarks.js': ['eslint', 'coverage'],
 	    '**/*.html': ['html2js']
     },
   
