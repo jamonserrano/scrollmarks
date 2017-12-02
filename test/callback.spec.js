@@ -17,6 +17,7 @@ describe('Callback parameter', function () {
 	});
 
 	it('should receive the direction and the mark as parameters', function (done) {
+		window.scrollTo(0, 0);
 		var mark = Scrollmarks.add(this.params);
 		window.scrollWithEvent(100);
 

@@ -9,7 +9,7 @@ describe('Scrollmarks.add()', function () {
 			element: this.element,
 			callback: this.emptyCallback
 		};
-		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
+		this.timeout = (Scrollmarks.config().scrollThrottle + 2) / 60 * 1000; // excepted execution + 2 frames
 	});
 
 	after(function () {
@@ -32,8 +32,8 @@ describe('Scrollmarks.add()', function () {
 			var callback = sinon.spy();
 			var mark;
 			
-			window.scrollWithEvent(0);
 			document.body.style.height = '200vh';
+			window.scrollTo(0, 0);
 			mark = Scrollmarks.add({element: this.element, callback: callback});
 			window.scrollWithEvent(100);
 
