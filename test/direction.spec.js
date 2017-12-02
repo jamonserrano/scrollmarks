@@ -12,6 +12,10 @@ describe('Direction parameter', function () {
 		};
 	});
 
+	after(function () {
+		fixture.cleanup();
+	});
+
 	afterEach(function () {
 		this.callback.reset();
 	});

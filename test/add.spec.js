@@ -11,6 +11,10 @@ describe('Scrollmarks.add()', function () {
 			callback: this.callback
 		};
 	});
+
+	after(function () {
+		fixture.cleanup();
+	});
 	
 	it('should exist', function () {
 		Scrollmarks.add.should.be.a('function');

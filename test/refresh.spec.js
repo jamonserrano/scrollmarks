@@ -28,6 +28,7 @@ describe('Scrollmarks.refresh()', function () {
 		after(function () {
 			Scrollmarks.remove(this.mark1);
 			Scrollmarks.remove(this.mark2);
+			fixture.cleanup();
 		});
 
 		afterEach(function () {

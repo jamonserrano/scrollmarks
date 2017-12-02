@@ -9,6 +9,10 @@ describe('Scrollmarks.start()', function () {
 		document.body.style.height = '200vh';
 	});
 
+	after(function () {
+		fixture.cleanup();
+	});
+
 	beforeEach(function () {
 		Scrollmarks.stop();
 		window.scrollWithEvent(0);

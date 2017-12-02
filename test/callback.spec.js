@@ -12,6 +12,10 @@ describe('Callback parameter', function () {
 		};
 	});
 
+	after(function () {
+		fixture.cleanup();
+	});
+
 	it('should receive the direction and the mark as parameters', function (done) {
 		var mark = Scrollmarks.add(this.params);
 		window.scrollWithEvent(100);

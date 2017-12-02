@@ -5,6 +5,10 @@ describe('Scrollmarks.remove()', function () {
 		fixture.load("static_position.html");
 	});
 
+	after(function () {
+		fixture.cleanup();
+	});
+
 	it('should exist', function () {
 		Scrollmarks.remove.should.be.a('function');
 	});
