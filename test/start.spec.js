@@ -11,7 +11,7 @@ describe('Scrollmarks.start()', function () {
 
 	beforeEach(function () {
 		Scrollmarks.stop();
-		window.scrollTo(0, 0);
+		window.scrollWithEvent(0);
 	})
 
 	it('should exist', function () {
@@ -25,7 +25,7 @@ describe('Scrollmarks.start()', function () {
 		Scrollmarks.stop();
 		Scrollmarks.start();
 		
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;
@@ -40,13 +40,13 @@ describe('Scrollmarks.start()', function () {
 		var upCallback = sinon.spy();
 		var marks = [];
 
-		window.scrollTo(0,0);
+		window.scrollWithEvent(0);
 		document.body.style.height = '200vh';
 		marks.push(Scrollmarks.add({element: this.element, callback: callback}));
 		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: "down"}));
 		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: "up"}));
 		Scrollmarks.stop();
-		window.scrollTo(0,100);
+		window.scrollWithEvent(100);
 		Scrollmarks.start();
 		
 		setTimeout(function () {

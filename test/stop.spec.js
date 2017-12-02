@@ -12,9 +12,9 @@ describe('Scrollmarks.stop()', function () {
 		Scrollmarks.start();
 		mark = Scrollmarks.add({element: element, callback: callback});
 		
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 		Scrollmarks.stop();
-		window.scrollTo(0, 0);
+		window.scrollWithEvent(0);
 
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;

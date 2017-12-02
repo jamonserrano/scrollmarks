@@ -14,7 +14,7 @@ describe('Callback parameter', function () {
 
 	it('should receive the direction and the mark as parameters', function (done) {
 		var mark = Scrollmarks.add(this.params);
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 
 		setTimeout(function () {
 			this.callback.args[0].length.should.equal(2);

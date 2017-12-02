@@ -10,7 +10,8 @@
         "Scrollmarks": true,
         "calling": true,
         "fixture": true,
-        "sinon": true
+        "sinon": true,
+        "define": true
     },
     "parserOptions": {
         "ecmaFeatures": {

@@ -18,8 +18,8 @@ describe('Direction parameter', function () {
 
 	it('should trigger in both directions when param is missing', function (done) {
 		var mark = Scrollmarks.add(this.params);
-		window.scrollTo(0, 100);
-		window.scrollTo(0, 0);
+		window.scrollWithEvent(100);
+		window.scrollWithEvent(0);
 
 		setTimeout(function () {
 			this.callback.should.have.been.calledTwice;
@@ -34,25 +34,25 @@ describe('Direction parameter', function () {
 			callback: this.callback,
 			direction: 'up'
 		});
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 
 		setTimeout(function () {
 			this.callback.should.not.have.been.called;
 			Scrollmarks.remove(mark);
-			window.scrollTo(0, 0);
+			window.scrollWithEvent(0);
 			done();
 		}.bind(this), this.timeout);
 	});
 
 	it('should trigger when direction is \'up\' and scrolling up', function (done) {
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 		var mark = Scrollmarks.add({
 			element: this.element,
 			callback: this.callback,
 			direction: 'up'
 		});
 
-		window.scrollTo(0, 0);
+		window.scrollWithEvent(0);
 		
 		setTimeout(function () {
 			this.callback.should.have.been.calledOnce;
@@ -68,18 +68,18 @@ describe('Direction parameter', function () {
 			direction: 'down'
 		});
 		
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 		
 		setTimeout(function () {
 			this.callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
-			window.scrollTo(0, 0);
+			window.scrollWithEvent(0);
 			done();
 		}.bind(this), this.timeout);
 	});
 
 	it('should not trigger when direction is \'down\' and scrolling up', function (done) {
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 
 		var mark = Scrollmarks.add({
 			element: this.element,
@@ -91,7 +91,7 @@ describe('Direction parameter', function () {
 		setTimeout(function () {
 			this.callback.should.have.been.calledOnce;
 			this.callback.reset();
-			window.scrollTo(0, 0);
+			window.scrollWithEvent(0);
 			setTimeout(function () {
 				// but it should not be called when we scroll up
 				this.callback.should.not.have.been.called;

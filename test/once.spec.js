@@ -19,7 +19,7 @@ describe('Once parameter', function () {
 
 	it('should remove the mark after the callback is called', function (done) {
 		var mark = Scrollmarks.add(this.params);
-		window.scrollTo(0, 100);
+		window.scrollWithEvent(100);
 
 		setTimeout(function () {
 			this.callback.should.have.been.calledOnce;
