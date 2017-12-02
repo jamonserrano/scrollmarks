@@ -143,7 +143,7 @@ function remove (key) {
  * @public
  */
 function start () {
-	if (clock === 0) {
+	if (clock === 0 && scrollMarks.size) {
 		checkMarks();
 
 		window.addEventListener('scroll', onScroll, listenerProperties);
