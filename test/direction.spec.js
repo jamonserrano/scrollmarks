@@ -68,6 +68,7 @@ describe('Direction parameter', function () {
 	});
 
 	it('should trigger when direction is \'down\' and scrolling down', function (done) {
+		window.scrollTo(0, 0);
 		var mark = Scrollmarks.add({
 			element: this.element,
 			callback: this.callback,
@@ -79,13 +80,13 @@ describe('Direction parameter', function () {
 		setTimeout(function () {
 			this.callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
-			window.scrollWithEvent(0);
+			window.scrollTo(0, 0);
 			done();
 		}.bind(this), this.timeout);
 	});
 
 	it('should not trigger when direction is \'down\' and scrolling up', function (done) {
-		window.scrollWithEvent(100);
+		window.scrollTo(0, 100);
 
 		var mark = Scrollmarks.add({
 			element: this.element,
