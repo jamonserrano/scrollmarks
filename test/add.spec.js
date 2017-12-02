@@ -4,12 +4,12 @@ describe('Scrollmarks.add()', function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
-		this.callback = function () {};
-		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
-		this.params = {
+		this.emptyCallback = function () {};
+		this.defaultParams = {
 			element: this.element,
-			callback: this.callback
+			callback: this.emptyCallback
 		};
+		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
 	});
 
 	after(function () {
@@ -21,10 +21,9 @@ describe('Scrollmarks.add()', function () {
 	});
 
 	it('should return a number', function () {
-		var mark = Scrollmarks.add({ element: this.element, callback: this.callback });
+		var mark = Scrollmarks.add({ element: this.element, callback: function () {} });
 		mark.should.be.a('number');
 		Scrollmarks.remove(mark);
-
 	});
 
 	describe('when called', function () {
@@ -74,18 +73,18 @@ describe('Scrollmarks.add()', function () {
 	describe('element parameter', function () {
 		
 		it('should be mandatory', function () {
-			calling(Scrollmarks.add).with({ callback: this.callback }).should.throw(TypeError);
+			calling(Scrollmarks.add).with({ callback: function () {} }).should.throw(TypeError);
 		});
 
 		it('should accept an HTML Element', function () {
 			calling(function() {
-				var mark = Scrollmarks.add(this.params);
+				var mark = Scrollmarks.add(this.defaultParams);
 				Scrollmarks.remove(mark);
 			}).on(this).should.not.throw();
 		});
 		
 		it('should not accept something else', function () {
-			calling(Scrollmarks.add).with({ element: "a", callback: this.callback }).should.throw(TypeError);
+			calling(Scrollmarks.add).with({ element: "a", callback: this.emptyCallback }).should.throw(TypeError);
 		});
 
 	});
@@ -98,7 +97,7 @@ describe('Scrollmarks.add()', function () {
 
 		it('should accept a function', function () {
 			calling(function() {
-				var mark = Scrollmarks.add(this.params);
+				var mark = Scrollmarks.add(this.defaultParams);
 				Scrollmarks.remove(mark);
 			}).on(this).should.not.throw();
 		});
@@ -114,7 +113,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept a number', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				offset: 0
 			};
 			
@@ -127,7 +126,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept a percentage value', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				offset: '25%'
 			};
 			
@@ -140,7 +139,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept a px value', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				offset: '25px'
 			};
 			
@@ -152,7 +151,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept a function', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				offset: function () {}
 			};
 			
@@ -165,7 +164,7 @@ describe('Scrollmarks.add()', function () {
 		it('should not accept any other string', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				offset: '25'
 			};
 			
@@ -179,7 +178,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept \'up\'', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				direction: 'up'
 			};
 			
@@ -192,7 +191,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept \'down\'', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				direction: 'down'
 			};
 			
@@ -205,7 +204,7 @@ describe('Scrollmarks.add()', function () {
 		it('should not accept something else', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				direction: true
 			};
 			
@@ -223,7 +222,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept a boolean', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				once: true
 			};
 			
@@ -244,7 +243,7 @@ describe('Scrollmarks.add()', function () {
 		it('should not accept something else', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				once: 'true'
 			};
 			
@@ -257,7 +256,7 @@ describe('Scrollmarks.add()', function () {
 		it('should accept boolean', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				debug: true
 			};
 			
@@ -277,7 +276,7 @@ describe('Scrollmarks.add()', function () {
 		it('should not accept something else', function () {
 			var params = {
 				element: this.element,
-				callback: this.callback,
+				callback: this.emptyCallback,
 				debug: 'true'
 			};
 			

@@ -4,24 +4,26 @@ describe('Direction parameter', function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
-		this.callback = sinon.spy();
 		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
-		this.params = {
-			element: this.element,
-			callback: this.callback
-		};
 	});
 
 	after(function () {
 		fixture.cleanup();
 	});
 
+	beforeEach(function () {
+		this.callback = sinon.spy();
+	});
+
 	afterEach(function () {
-		this.callback.reset();
+		Scrollmarks.stop();
 	});
 
 	it('should trigger in both directions when param is missing', function (done) {
-		var mark = Scrollmarks.add(this.params);
+		var mark = Scrollmarks.add({
+			element: this.element,
+			callback: this.callback
+		});
 		window.scrollWithEvent(100);
 		window.scrollWithEvent(0);
 
@@ -49,7 +51,7 @@ describe('Direction parameter', function () {
 	});
 
 	it('should trigger when direction is \'up\' and scrolling up', function (done) {
-		window.scrollWithEvent(100);
+		window.scrollTo(0, 100);
 		var mark = Scrollmarks.add({
 			element: this.element,
 			callback: this.callback,
