@@ -1,25 +1,35 @@
 describe('Scrollmarks.stop()', function () {
+	before(function () {
+		fixture.setBase("test/fixtures");
+		fixture.load("static_position.html");
+		this.element = document.getElementById('static');
+		this.callback = sinon.spy();
+		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
+		this.params = {
+			element: this.element,
+			callback: this.callback
+		};
+	});
+
+	
 	it('should exist', function () {
 		Scrollmarks.stop.should.be.a('function');
 	});
 
 	it('should stop listening', function (done) {
-		var element = document.getElementById('static');
-		var callback = sinon.spy();
-		var timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
 		var mark;
 
 		Scrollmarks.start();
-		mark = Scrollmarks.add({element: element, callback: callback});
+		mark = Scrollmarks.add(this.params);
 		
 		window.scrollWithEvent(100);
 		Scrollmarks.stop();
 		window.scrollWithEvent(0);
 
 		setTimeout(function () {
-			callback.should.have.been.calledOnce;
+			this.callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
 			done();
-		}, timeout);
+		}.bind(this), this.timeout);
 	});
 });
