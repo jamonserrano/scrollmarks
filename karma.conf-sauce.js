@@ -1,23 +1,44 @@
 // Karma configuration
-// Generated on Fri Feb 19 2016 14:19:20 GMT+0100 (CET)
 
 module.exports = function(config) {
 	var customLaunchers = {
+		sl_chrome_latest: {
+			base: 'SauceLabs',
+			browserName: 'chrome',
+			version: 'latest'
+		},
 		sl_chrome_previous: {
 			base: 'SauceLabs',
 			browserName: 'chrome',
 			version: 'latest-1'
+		},
+		sl_firefox_latest: {
+			base: 'SauceLabs',
+			browserName: 'firefox',
+			version: 'latest'
 		},
 		sl_firefox_previous: {
 			base: 'SauceLabs',
 			browserName: 'firefox',
 			version: 'latest-1'
 		},
+		sl_edge_latest: {
+			base: 'SauceLabs',
+      		browserName: 'microsoftedge',
+      		platform: 'Windows 10',
+      		version: 'latest'
+		},
 		sl_edge_previous: {
 			base: 'SauceLabs',
       		browserName: 'microsoftedge',
       		platform: 'Windows 10',
       		version: 'latest-1'
+		},
+		sl_safari_latest: {
+			base: 'SauceLabs',
+			browserName: 'safari',
+			platform: 'macOS 10.12',
+			version: 'latest'
 		},
 		sl_safari_previous: {
 			base: 'SauceLabs',
