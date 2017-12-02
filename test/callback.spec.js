@@ -24,6 +24,7 @@ describe('Callback parameter', function () {
 			this.callback.args[0].length.should.equal(2);
 			this.callback.args[0][0].should.equal('down');
 			this.callback.args[0][1].key.should.equal(mark);
+			Scrollmarks.remove(mark);
 			done();
 		}.bind(this), this.timeout);
 	});
