@@ -75,11 +75,11 @@ function add (mark) {
 	const { element, callback, offset, direction, once, debug } = mark;
 
 	if (!(element instanceof HTMLElement)) {
-		throw new TypeError(errorMessage(false, 'element', 'an HTML Element', element));
+		throw new TypeError(errorMessage('', 'element', 'an HTML Element', element));
 	}
 
 	if (!isFunction(callback)) {
-		throw new TypeError(errorMessage(false, 'callback', 'a function', callback));
+		throw new TypeError(errorMessage('', 'callback', 'a function', callback));
 	}
 
 	if (isUndefined(offset)) {
