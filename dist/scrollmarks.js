@@ -16,6 +16,13 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	/**
+  * Scrollmarks
+  * @license
+  * Copyright (c) 2017 Viktor Honti
+  * Licensed under the MIT License.
+  * https://github.com/jamonserrano/scrollmarks
+  */
 
 	var scrollMarks = window.Map ? new Map() : createMockMap();
 

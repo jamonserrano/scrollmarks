@@ -6,7 +6,7 @@
   "module": "src/scrollmarks.js",
   "scripts": {
     "test": "karma start --single-run",
-    "build": "babel src/scrollmarks.js | tee dist/scrollmarks.js | uglifyjs -c -m -o dist/scrollmarks.min.js",
+    "build": "babel src/scrollmarks.js | tee dist/scrollmarks.js | uglifyjs -c -m --comments -o dist/scrollmarks.min.js",
     "start": "watch \"npm run build\" src"
   },
   "repository": {
