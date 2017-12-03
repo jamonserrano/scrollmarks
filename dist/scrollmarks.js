@@ -17,7 +17,7 @@
 		value: true
 	});
 
-	var scrollMarks = window.Map ? new Map() : createfakeMap();
+	var scrollMarks = window.Map ? new Map() : createMockMap();
 
 	var index = 0;
 
@@ -71,11 +71,11 @@
 
 
 		if (!(element instanceof HTMLElement)) {
-			throw new TypeError(errorMessage(false, 'element', 'an HTML Element', element));
+			throw new TypeError(errorMessage('', 'element', 'an HTML Element', element));
 		}
 
 		if (!isFunction(callback)) {
-			throw new TypeError(errorMessage(false, 'callback', 'a function', callback));
+			throw new TypeError(errorMessage('', 'callback', 'a function', callback));
 		}
 
 		if (isUndefined(offset)) {
@@ -307,8 +307,8 @@
 		helperElement.innerHTML = 'offset: ' + mark.offset + ', computedOffset: ' + (isFunction(mark.computedOffset) ? mark.computedOffset(mark.element) : mark.computedOffset) + ', triggerPoint: ' + mark.triggerPoint + 'px';
 	}
 
-	function createfakeMap() {
-		return Object.defineProperties({}, {
+	function createMockMap() {
+		return Object.defineProperties(Object.create(null), {
 			'delete': {
 				value: function value(key) {
 					return this.has(key) && delete this[key];
@@ -330,7 +330,7 @@
 			},
 			'has': {
 				value: function value(key) {
-					return this.hasOwnProperty(key);
+					return !isUndefined(this[key]);
 				}
 			},
 			'set': {

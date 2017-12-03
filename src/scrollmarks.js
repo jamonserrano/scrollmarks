@@ -71,7 +71,7 @@ window.addEventListener("test", null, {
  * @param {boolean} [mark.debug]
  * @return {number} key
  */
-function add (mark) {
+function add(mark) {
 	const { element, callback, offset, direction, once, debug } = mark;
 
 	if (!(element instanceof HTMLElement)) {
@@ -130,7 +130,7 @@ function add (mark) {
  * @param {number} key
  * @return {boolean} delete success
  */
-function remove (key) {
+function remove(key) {
 	const success = scrollMarks.delete(key);
 	if (!scrollMarks.size) {
 		stop();
@@ -142,7 +142,7 @@ function remove (key) {
  * Start listening
  * @public
  */
-function start () {
+function start() {
 	if (clock === 0 && scrollMarks.size) {
 		checkMarks();
 
@@ -156,7 +156,7 @@ function start () {
  * Stop listening
  * @public
  */
-function stop () {
+function stop() {
 	if (clock > 0) {
 		window.cancelAnimationFrame(clock);
 		window.removeEventListener('scroll', onScroll, listenerProperties);
@@ -174,7 +174,7 @@ function stop () {
  * Scroll event listener
  * Sets the scrolled flag for the clock
  */
-function onScroll () {
+function onScroll() {
 	window.requestAnimationFrame(() => scrolled = true);
 }
 
@@ -182,14 +182,14 @@ function onScroll () {
  * Resize listener
  * Sets the resized flag for the clock
  */
-function onResize () {
+function onResize() {
 	window.requestAnimationFrame(() => resized = true);
 }
 
 /**
  * Single handler for scroll, document height, and page resize
  */
-function checkState () {
+function checkState() {
 	// resize check
 	if (resizeTick === config.resizeThrottle) {
 		if (resized) {
@@ -227,7 +227,7 @@ function checkState () {
 /**
  * Checks if scrollmarks should be triggered
  */
-function checkMarks () {
+function checkMarks() {
 	// get scroll position and direction
 	const currentScroll = window.pageYOffset;
 	scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
@@ -253,7 +253,7 @@ function checkMarks () {
 /**
  * Trigger affected scrollmarks
  */
-function triggerQueue () {
+function triggerQueue() {
 	// put trigger marks in order
 	queue.sort(scrollDirection === 'down' ? sortAscending : sortDescending);
 	// call each mark
@@ -266,7 +266,7 @@ function triggerQueue () {
  * Trigger a single mark
  * @param {Object} mark
  */
-function trigger (mark) {
+function trigger(mark) {
 	mark.callback(scrollDirection, mark)
 
 	if (mark.once) {
@@ -280,7 +280,7 @@ function trigger (mark) {
  * @param {Object} b mark
  * @return {number}
  */
-function sortAscending (a, b) {
+function sortAscending(a, b) {
 	return a.triggerPoint - b.triggerPoint;
 }
 
@@ -290,7 +290,7 @@ function sortAscending (a, b) {
  * @param {Object} b mark
  * @return {number}
  */
-function sortDescending (a, b) {
+function sortDescending(a, b) {
 	return b.triggerPoint - a.triggerPoint;
 }
 
@@ -300,14 +300,14 @@ function sortDescending (a, b) {
  * @param {('up'|'down')} [direction]
  * @return {boolean} match
  */
-function directionMatches (markDirection, direction) {
+function directionMatches(markDirection, direction) {
 	return !markDirection || markDirection === (direction || scrollDirection);
 }
 
 /**
  * Update all trigger points
  */
-function updateTriggerPoints () {
+function updateTriggerPoints() {
 	scrollMarks.forEach(calculateTriggerPoint);
 }
 
@@ -315,7 +315,7 @@ function updateTriggerPoints () {
  * Calculate a trigger point
  * @param {Object} mark
  */
-function calculateTriggerPoint (mark) {
+function calculateTriggerPoint(mark) {
 	const computedOffset = mark.computedOffset;
 	const offsetValue = isFunction(computedOffset) ? computedOffset(mark.element) : computedOffset;
 	mark.triggerPoint = window.pageYOffset + mark.element.getBoundingClientRect().top - offsetValue;
@@ -329,7 +329,7 @@ function calculateTriggerPoint (mark) {
  * @public
  * @param {number} [key]
  */
-function refresh (key) {
+function refresh(key) {
 	if (isUndefined(key)) {
 		idle(updateTriggerPoints);
 	} else if (scrollMarks.has(key)) {
@@ -343,7 +343,7 @@ function refresh (key) {
  * Idle callback
  * @param {Function} callback
  */
-function idle (callback) {
+function idle(callback) {
 	const idleTimeout = config.idleTimeout;
 	if (idleTimeout === 0) {
 		callback();
@@ -354,7 +354,7 @@ function idle (callback) {
 	}
 }
 
-function setHelperElement (mark) {
+function setHelperElement(mark) {
 	let helperElement = mark.helper;
 	
 	if (!helperElement) {
@@ -426,7 +426,7 @@ function createMockMap() {
  * @param {*} value
  * @return {boolean}
  */
-function isNumber (value) {
+function isNumber(value) {
 	return typeof value === 'number';
 }
 
@@ -435,7 +435,7 @@ function isNumber (value) {
  * @param {*} value
  * @return {boolean}
  */
-function isString (value) {
+function isString(value) {
 	return typeof value === 'string';
 }
 
@@ -444,7 +444,7 @@ function isString (value) {
  * @param {*} value
  * @return {boolean}
  */
-function isFunction (value) {
+function isFunction(value) {
 	return typeof value === 'function';
 }
 
@@ -453,7 +453,7 @@ function isFunction (value) {
  * @param {*} value
  * @return {boolean}
  */
-function isUndefined (value) {
+function isUndefined(value) {
 	return value === undefined;
 }
 
@@ -462,7 +462,7 @@ function isUndefined (value) {
  * @param {*} value
  * @return {boolean}
  */
-function isBoolean (value) {
+function isBoolean(value) {
 	return typeof value === 'boolean';
 }
 
@@ -474,7 +474,7 @@ function isBoolean (value) {
  * @param {*} actual
  * @return {string}
  */
-function errorMessage (type, name, expected, actual) {
+function errorMessage(type, name, expected, actual) {
 	const param = type ? ' parameter' : 'Parameter';
 	return `${type}${param} '${name}' must be ${expected}, got ${actual} instead`;
 }
@@ -487,7 +487,7 @@ function errorMessage (type, name, expected, actual) {
  * @param {number} options.resizeThrottle
  * @param {number} options.idleTimeout
  */
-function getSetConfig (params) {
+function getSetConfig(params) {
 	// get
 	if (isUndefined(params)) {
 		return {
@@ -509,7 +509,7 @@ function getSetConfig (params) {
  * @param {string} key
  * @param {number} value
  */
-function setOption (key, value) {
+function setOption(key, value) {
 	if (!['scrollThrottle', 'resizeThrottle', 'idleTimeout'].includes(key)) {
 		throw new ReferenceError(`Invalid config parameter: '${key}'`);
 	}
@@ -526,7 +526,7 @@ function setOption (key, value) {
 /**
  * Reset ticks
  */
-function resetTicks () {
+function resetTicks() {
 	scrollTick = 1;
 	resizeTick = 1;
 }
