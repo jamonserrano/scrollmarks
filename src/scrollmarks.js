@@ -8,7 +8,7 @@
  */
 
 // store for scrollmarks
-const scrollMarks = window.Map ? new Map() : createfakeMap();
+const scrollMarks = window.Map ? new Map() : createMockMap();
 // index of scrollmarks
 let index = 0;
 // queue for triggered marks
@@ -382,11 +382,11 @@ function setHelperElement (mark) {
 }
 
 /**
- * Create a fake Map object
+ * Create a mock Map object
  * @return {Object}
  */
-function createfakeMap () {
-	return Object.defineProperties({}, {
+function createMockMap() {
+	return Object.defineProperties(Object.create(null), {
 		'delete': {
 			value: function (key) {
 				return this.has(key) && delete this[key];
@@ -404,7 +404,7 @@ function createfakeMap () {
 		},
 		'has': {
 			value: function (key) {
-				return this.hasOwnProperty(key);
+				return !isUndefined(this[key]);
 			}
 		},
 		'set': {
@@ -414,7 +414,7 @@ function createfakeMap () {
 			}
 		},
 		'size': {
-			get: function () {
+			get() {
 				return Object.keys(this).length;
 			}
 		}
