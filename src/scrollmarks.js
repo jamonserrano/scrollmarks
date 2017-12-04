@@ -113,7 +113,7 @@ function add(mark) {
 
 	calculateTriggerPoint(mark);
 
-	if (clock === 0) {
+	if (!clock) {
 		start();
 	} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
 		// we don't know how we got to the current position so only trigger the mark if it's above and accepts downscroll
@@ -142,7 +142,7 @@ function remove(key) {
  * @public
  */
 function start() {
-	if (clock === 0 && scrollMarks.size) {
+	if (!clock && scrollMarks.size) {
 		checkMarks();
 
 		window.addEventListener('scroll', onScroll, listenerProperties);
@@ -156,7 +156,7 @@ function start() {
  * @public
  */
 function stop() {
-	if (clock > 0) {
+	if (clock) {
 		window.cancelAnimationFrame(clock);
 		window.removeEventListener('scroll', onScroll, listenerProperties);
 		window.removeEventListener('resize', onResize, listenerProperties);
@@ -498,7 +498,7 @@ function getSetConfig(params) {
 	// set
 	Object.keys(params).forEach((key) => setOption(key, params[key]));
 
-	if (clock > 0) {
+	if (clock) {
 		resetTicks();
 	}
 }
