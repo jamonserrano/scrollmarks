@@ -4,7 +4,6 @@ describe('Scrollmarks.stop()', function () {
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
 		this.callback = sinon.spy();
-		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
 		this.params = {
 			element: this.element,
 			callback: this.callback
@@ -30,6 +29,6 @@ describe('Scrollmarks.stop()', function () {
 			this.callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
 			done();
-		}.bind(this), this.timeout);
+		}.bind(this), getTimeout());
 	});
 });

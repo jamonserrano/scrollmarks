@@ -4,7 +4,6 @@ describe('Scrollmarks.start()', function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
-		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // expected execution + 1 frame
 		
 		document.body.style.height = '200vh';
 	});
@@ -35,7 +34,7 @@ describe('Scrollmarks.start()', function () {
 			callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
 			done();
-		}, this.timeout);
+		}, getTimeout());
 	});
 
 	it('should trigger callback if element is passed and direction is not "up"', function (done) {
@@ -61,7 +60,7 @@ describe('Scrollmarks.start()', function () {
 				Scrollmarks.remove(mark);
 			})
 			done();
-		}, this.timeout);
+		}, getTimeout());
 	});
 
 });

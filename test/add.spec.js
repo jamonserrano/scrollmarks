@@ -9,7 +9,6 @@ describe('Scrollmarks.add()', function () {
 			element: this.element,
 			callback: this.emptyCallback
 		};
-		this.timeout = (Scrollmarks.config().scrollThrottle + 2) / 60 * 1000; // excepted execution + 2 frames
 	});
 
 	after(function () {
@@ -41,7 +40,7 @@ describe('Scrollmarks.add()', function () {
 				callback.should.have.been.calledOnce;
 				Scrollmarks.remove(mark);
 				done();
-			}, this.timeout);
+			}, getTimeout());
 		});
 
 		it('should trigger callback if element is passed and direction is not "up"', function (done) {
@@ -65,7 +64,7 @@ describe('Scrollmarks.add()', function () {
 				marks.forEach(function (mark) {
 					Scrollmarks.remove(mark);
 				})
-			}, this.timeout);
+			}, getTimeout());
 		});
 
 	});

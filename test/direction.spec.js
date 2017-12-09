@@ -4,7 +4,6 @@ describe('Direction parameter', function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
-		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
 	});
 
 	after(function () {
@@ -31,7 +30,7 @@ describe('Direction parameter', function () {
 			this.callback.should.have.been.calledTwice;
 			Scrollmarks.remove(mark);
 			done();
-		}.bind(this), this.timeout);
+		}.bind(this), getTimeout());
 	});
 
 	it('should not trigger when direction is \'up\' and scrolling down', function (done) {
@@ -47,7 +46,7 @@ describe('Direction parameter', function () {
 			Scrollmarks.remove(mark);
 			window.scrollWithEvent(0);
 			done();
-		}.bind(this), this.timeout);
+		}.bind(this), getTimeout());
 	});
 
 	it('should trigger when direction is \'up\' and scrolling up', function (done) {
@@ -64,7 +63,7 @@ describe('Direction parameter', function () {
 			this.callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
 			done();
-		}.bind(this), this.timeout);
+		}.bind(this), getTimeout());
 	});
 
 	it('should trigger when direction is \'down\' and scrolling down', function (done) {
@@ -82,7 +81,7 @@ describe('Direction parameter', function () {
 			Scrollmarks.remove(mark);
 			window.scrollTo(0, 0);
 			done();
-		}.bind(this), this.timeout);
+		}.bind(this), getTimeout());
 	});
 
 	it('should not trigger when direction is \'down\' and scrolling up', function (done) {
@@ -104,7 +103,7 @@ describe('Direction parameter', function () {
 				this.callback.should.not.have.been.called;
 				Scrollmarks.remove(mark);
 				done();
-			}.bind(this), this.timeout);
-		}.bind(this), this.timeout);
+			}.bind(this), getTimeout());
+		}.bind(this), getTimeout());
 	});
 });

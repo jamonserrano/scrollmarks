@@ -5,7 +5,6 @@ describe('Callback parameter', function () {
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
 		this.callback = sinon.spy();
-		this.timeout = (Scrollmarks.config().scrollThrottle + 1) / 60 * 1000; // excepted execution + 1 frame
 		this.params = {
 			element: this.element,
 			callback: this.callback
@@ -27,6 +26,6 @@ describe('Callback parameter', function () {
 			this.callback.args[0][1].key.should.equal(mark);
 			Scrollmarks.remove(mark);
 			done();
-		}.bind(this), this.timeout);
+		}.bind(this), getTimeout());
 	});
 });
