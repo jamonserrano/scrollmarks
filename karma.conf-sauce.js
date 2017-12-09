@@ -6,61 +6,81 @@ module.exports = function(config) {
 			base: 'SauceLabs',
 			browserName: 'chrome',
 			platform: 'Windows 10',
-			version: 'latest'
+			version: 'latest',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_chrome_previous: {
 			base: 'SauceLabs',
 			browserName: 'chrome',
 			platform: 'Windows 10',
-			version: 'latest-1'
+			version: 'latest-1',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_firefox_latest: {
 			base: 'SauceLabs',
 			browserName: 'firefox',
 			platform: 'Windows 10',
-			version: 'latest'
+			version: 'latest',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_firefox_previous: {
 			base: 'SauceLabs',
 			browserName: 'firefox',
 			platform: 'Windows 10',
-			version: 'latest-1'
+			version: 'latest-1',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_edge_latest: {
 			base: 'SauceLabs',
       		browserName: 'microsoftedge',
       		platform: 'Windows 10',
-      		version: 'latest'
+      		version: 'latest',
+			  recordVideo: false,
+			  recordScreenshots: false
 		},
 		sl_edge_previous: {
 			base: 'SauceLabs',
       		browserName: 'microsoftedge',
       		platform: 'Windows 10',
-      		version: 'latest-1'
+      		version: 'latest-1',
+			  recordVideo: false,
+			  recordScreenshots: false
 		},
 		sl_safari_latest: {
 			base: 'SauceLabs',
 			browserName: 'safari',
 			platform: 'macOS 10.12',
-			version: 'latest'
+			version: 'latest',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_safari_previous: {
 			base: 'SauceLabs',
 			browserName: 'safari',
 			platform: 'macOS 10.12',
-			version: 'latest-1'
+			version: 'latest-1',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_ie_11: {
 			base: 'SauceLabs',
 			browserName: 'internet explorer',
 			platform: 'Windows 7',
-			version: '11.0'
+			version: '11.0',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_ie_10: {
 			base: 'SauceLabs',
 			browserName: 'internet explorer',
 			platform: 'Windows 7',
-			version: '10.0'
+			version: '10.0',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_ios_safari_latest: {
 			base: 'SauceLabs',
@@ -69,7 +89,9 @@ module.exports = function(config) {
 			deviceName: 'iPhone 8 Simulator',
 			deviceOrientation: 'portrait',
 			platformVersion: '11.0',
-			platformName: 'iOS'
+			platformName: 'iOS',
+			recordVideo: false,
+			recordScreenshots: false
 		},
 		sl_ios_safari_previous: {
 			base: 'SauceLabs',
@@ -78,7 +100,9 @@ module.exports = function(config) {
 			deviceName: 'iPhone 7 Simulator',
 			deviceOrientation: 'portrait',
 			platformVersion: '10.3',
-			platformName: 'iOS'
+			platformName: 'iOS',
+			recordVideo: false,
+			recordScreenshots: false
 		}
 	}
   
