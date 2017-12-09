@@ -2,7 +2,7 @@
 
 module.exports = function(config) {
 	var customLaunchers = {
-		/*sl_chrome_latest: {
+		sl_chrome_latest: {
 			base: 'SauceLabs',
 			browserName: 'chrome',
 			platform: 'Windows 10',
@@ -81,7 +81,7 @@ module.exports = function(config) {
 			version: '10.0',
 			recordVideo: false,
 			recordScreenshots: false
-		},*/
+		}/*,
 		sl_ios_safari_latest: {
 			base: 'SauceLabs',
 			browserName: 'Safari',
@@ -103,7 +103,7 @@ module.exports = function(config) {
 			platformName: 'iOS',
 			recordVideo: false,
 			recordScreenshots: false
-		}
+		}*/
 	}
   
 	config.set({
