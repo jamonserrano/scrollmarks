@@ -57,6 +57,24 @@ module.exports = function(config) {
 			browserName: 'internet explorer',
 			platform: 'Windows 7',
 			version: '10.0'
+		},
+		sl_ios_safari_latest: {
+			base: 'SauceLabs',
+			browserName: 'Safari',
+			appiumVersion: '1.7.1',
+			deviceName: 'iPhone 8 Simulator',
+			deviceOrientation: 'portrait',
+			platformVersion: '11.0',
+			platformName: 'iOS'
+		},
+		sl_ios_safari_previous: {
+			base: 'SauceLabs',
+			browserName: 'Safari',
+			appiumVersion: '1.7.1',
+			deviceName: 'iPhone 7 Simulator',
+			deviceOrientation: 'portrait',
+			platformVersion: '10.3',
+			platformName: 'iOS'
 		}
 	}
   
