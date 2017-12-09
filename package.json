@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "dist/scrollmarks.js",
-  "module": "src/scrollmarks.js",
+  "esnext": "src/scrollmarks.js",
   "scripts": {
     "test": "karma start --single-run",
     "build": "babel src/scrollmarks.js | tee dist/scrollmarks.js | uglifyjs -c -m --comments -o dist/scrollmarks.min.js",
