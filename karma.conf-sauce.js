@@ -5,21 +5,25 @@ module.exports = function(config) {
 		sl_chrome_latest: {
 			base: 'SauceLabs',
 			browserName: 'chrome',
+			platform: 'Windows 10',
 			version: 'latest'
 		},
 		sl_chrome_previous: {
 			base: 'SauceLabs',
 			browserName: 'chrome',
+			platform: 'Windows 10',
 			version: 'latest-1'
 		},
 		sl_firefox_latest: {
 			base: 'SauceLabs',
 			browserName: 'firefox',
+			platform: 'Windows 10',
 			version: 'latest'
 		},
 		sl_firefox_previous: {
 			base: 'SauceLabs',
 			browserName: 'firefox',
+			platform: 'Windows 10',
 			version: 'latest-1'
 		},
 		sl_edge_latest: {
