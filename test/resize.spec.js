@@ -11,7 +11,7 @@ describe.only('Resize watching', function () {
 		});
 
 		var offsetCalls = offset.callCount;
-		window.dispatchEvent(new Event('resize'));
+		window.dispatchEvent(new CustomEvent('resize'));
 		
 		// not called straight away
 		offset.should.have.callCount(offsetCalls);
