@@ -30,8 +30,6 @@
 
 	var queue = [];
 
-	var clock = 0;
-
 	var config = {
 		scrollThrottle: 10,
 
@@ -40,19 +38,23 @@
 		idleTimeout: 100
 	};
 
-	var scrolled = false;
+	var clock = void 0;
 
-	var scrollTick = 1;
+	var scrolled = void 0;
 
-	var previousScroll = 0;
+	var scrollTick = void 0;
+
+	var previousScroll = void 0;
 
 	var scrollDirection = void 0;
 
-	var resized = false;
+	var resized = void 0;
 
-	var resizeTick = 1;
+	var resizeTick = void 0;
 
 	var previousHeight = document.body.scrollHeight;
+
+	setInitialState();
 
 	var hasIdleCallback = Boolean(window.requestIdleCallback);
 
@@ -112,7 +114,6 @@
 		var key = index++;
 		mark.key = key;
 		scrollMarks.set(key, mark);
-
 		calculateTriggerPoint(mark);
 
 		if (!clock) {
@@ -148,11 +149,7 @@
 			window.removeEventListener('scroll', onScroll, listenerProperties);
 			window.removeEventListener('resize', onResize, listenerProperties);
 
-			clock = 0;
-			previousScroll = 0;
-			scrolled = false;
-			resized = false;
-			resetTicks();
+			setInitialState();
 		}
 	}
 
@@ -408,6 +405,15 @@
 		} else {
 			config[key] = value;
 		}
+	}
+
+	function setInitialState() {
+		clock = 0;
+		previousScroll = 0;
+		previousHeight = document.body.scrollHeight;
+		scrolled = false;
+		resized = false;
+		resetTicks();
 	}
 
 	function resetTicks() {

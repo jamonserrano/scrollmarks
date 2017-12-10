@@ -13,9 +13,6 @@ let index = 0;
 // queue for triggered marks
 let queue = [];
 
-// central clock, 0 when stopped, arbitrary number (the return value of requestAnimationFrame) when running
-let clock = 0;
-
 // configuration
 const config = {
 	// throttle for scroll events (configurable)
@@ -26,21 +23,24 @@ const config = {
 	idleTimeout: 100
 };
 
+// central clock, 0 when stopped, arbitrary number (the return value of requestAnimationFrame) when running
+let clock;
 // document was scrolled
-let scrolled = false;
+let scrolled;
 // frame counter for scroll events
-let scrollTick = 1;
+let scrollTick;
 // previous scroll position;
-let previousScroll = 0;
+let previousScroll;
 // scroll direction
 let scrollDirection;
-
 // document was resized
-let resized = false;
+let resized;
 // frame counter for resize events
-let resizeTick = 1;
+let resizeTick;
 // previous document height
 let previousHeight = document.body.scrollHeight;
+
+setInitialState();
 
 // browser supports idle callback
 const hasIdleCallback = Boolean(window.requestIdleCallback);
@@ -108,7 +108,6 @@ function add(mark) {
 	const key = index++;
 	mark.key = key;
 	scrollMarks.set(key, mark);
-
 	calculateTriggerPoint(mark);
 
 	if (!clock) {
@@ -159,11 +158,7 @@ function stop() {
 		window.removeEventListener('scroll', onScroll, listenerProperties);
 		window.removeEventListener('resize', onResize, listenerProperties);
 
-		clock = 0;
-		previousScroll = 0;
-		scrolled = false;
-		resized = false;
-		resetTicks();
+		setInitialState();
 	}
 }
 
@@ -519,6 +514,18 @@ function setOption(key, value) {
 	} else {
 		config[key] = value;
 	}
+}
+
+/**
+ * (Re)set the initial state
+ */
+function setInitialState() {
+	clock = 0;
+	previousScroll = 0;
+	previousHeight = document.body.scrollHeight;
+	scrolled = false;
+	resized = false;
+	resetTicks();
 }
 
 /**
