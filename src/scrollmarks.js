@@ -39,10 +39,8 @@ let scrollDirection;
 let resized = false;
 // frame counter for resize events
 let resizeTick = 1;
-// documentElement cached
-const documentElement = document.documentElement;
 // previous document height
-let previousHeight = documentElement.scrollHeight;
+let previousHeight = document.body.scrollHeight;
 
 // browser supports idle callback
 const hasIdleCallback = Boolean(window.requestIdleCallback);
@@ -197,7 +195,7 @@ function checkState() {
 			resized = false;
 		} else {
 			// check the height
-			const height = documentElement.scrollHeight;
+			const height = document.body.scrollHeight;
 			if (previousHeight !== height) {
 				idle(updateTriggerPoints);
 				previousHeight = height;
@@ -530,4 +528,4 @@ function resetTicks() {
 	resizeTick = 1;
 }
 
-export default { add, remove, start, stop, refresh, config: getSetConfig };
+export default { add, remove, start, stop, refresh, config: getSetConfig, size: () => scrollMarks.size };

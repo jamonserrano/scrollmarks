@@ -52,9 +52,7 @@
 
 	var resizeTick = 1;
 
-	var documentElement = document.documentElement;
-
-	var previousHeight = documentElement.scrollHeight;
+	var previousHeight = document.body.scrollHeight;
 
 	var hasIdleCallback = Boolean(window.requestIdleCallback);
 
@@ -176,7 +174,7 @@
 				idle(updateTriggerPoints);
 				resized = false;
 			} else {
-				var height = documentElement.scrollHeight;
+				var height = document.body.scrollHeight;
 				if (previousHeight !== height) {
 					idle(updateTriggerPoints);
 					previousHeight = height;
@@ -416,7 +414,9 @@
 		resizeTick = 1;
 	}
 
-	exports.default = { add: add, remove: remove, start: start, stop: stop, refresh: refresh, config: getSetConfig };
+	exports.default = { add: add, remove: remove, start: start, stop: stop, refresh: refresh, config: getSetConfig, size: function size() {
+			return scrollMarks.size;
+		} };
 	module.exports = exports['default'];
 });
 
