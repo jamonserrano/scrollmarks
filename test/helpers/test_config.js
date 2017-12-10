@@ -1,6 +1,6 @@
 Scrollmarks.config({
-	scrollThrottle: 1,
-	resizeThrottle: 1,
+	scrollThrottle: 2,
+	resizeThrottle: 2,
 	idleTimeout: 0
 });
 
