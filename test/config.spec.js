@@ -7,7 +7,6 @@ describe('Scrollmarks.config()', function () {
 	});
 
 	it('should set the config when called with params', function () {
-		var defaultConfig = Scrollmarks.config();
 		var expected = {
 			scrollThrottle: 999,
 			resizeThrottle: 888,
@@ -21,7 +20,7 @@ describe('Scrollmarks.config()', function () {
 		result.resizeThrottle.should.equal(expected.resizeThrottle);
 		result.idleTimeout.should.equal(expected.idleTimeout);
 
-		Scrollmarks.config(defaultConfig);
+		Scrollmarks.config(testConfig.scrollmarks);
 	});
 
 	it('should not accept invalid params', function () {
