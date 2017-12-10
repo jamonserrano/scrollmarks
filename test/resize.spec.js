@@ -1,4 +1,9 @@
 describe('Resize watching', function () {
+	before(function () {
+		fixture.setBase("test/fixtures");
+		fixture.load("static_position.html");
+	});
+
 	it('should recalculate offsets when the document is resized', function (done) {
 		var offset = sinon.spy(function () {
 			return 0;
