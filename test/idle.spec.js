@@ -15,6 +15,7 @@ describe('Idle callback', function () {
 	});
 
 	after(function () {
+		Scrollmarks.remove(this.mark);
 		Scrollmarks.config(testConfig.scrollmarks);
 	});
 
