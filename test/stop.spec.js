@@ -2,12 +2,6 @@ describe('Scrollmarks.stop()', function () {
 	before(function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
-		this.element = document.getElementById('static');
-		this.callback = sinon.spy();
-		this.params = {
-			element: this.element,
-			callback: this.callback
-		};
 	});
 
 	
@@ -16,10 +10,15 @@ describe('Scrollmarks.stop()', function () {
 	});
 
 	it('should stop listening', function (done) {
+		var callback = sinon.spy();
 		var mark;
 
+
 		Scrollmarks.start();
-		mark = Scrollmarks.add(this.params);
+		mark = Scrollmarks.add({
+			element: document.getElementById('static'),
+			callback: callback
+		});
 		
 		window.scrollWithEvent(100);
 
@@ -27,10 +26,10 @@ describe('Scrollmarks.stop()', function () {
 			Scrollmarks.stop();
 			window.scrollWithEvent(0);
 			setTimeout(function () {
-				this.callback.should.have.been.calledOnce;
+				callback.should.have.been.calledOnce;
 				Scrollmarks.remove(mark);
 				done();
-			}.bind(this), getTimeout());
-		}.bind(this), getTimeout());
+			}, getTimeout());
+		}, getTimeout());
 	});
 });

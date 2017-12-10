@@ -11,18 +11,15 @@ describe('Direction parameter', function () {
 		fixture.cleanup();
 	});
 
-	beforeEach(function () {
-		this.callback = sinon.spy();
-	});
-
 	afterEach(function () {
 		Scrollmarks.stop();
 	});
 
 	it('should trigger in both directions when param is missing', function (done) {
+		var callback = sinon.spy();
 		var mark = Scrollmarks.add({
 			element: this.element,
-			callback: this.callback
+			callback: callback
 		});
 
 		window.scrollWithEvent(100);
@@ -30,84 +27,87 @@ describe('Direction parameter', function () {
 		setTimeout(function () {
 			window.scrollWithEvent(0);
 			setTimeout(function () {
-				this.callback.should.have.been.calledTwice;
+				callback.should.have.been.calledTwice;
 				Scrollmarks.remove(mark);
 				done();
-			}.bind(this), getTimeout());
-		}.bind(this), getTimeout());
+			}, getTimeout());
+		}, getTimeout());
 	});
 
 	it('should not trigger when direction is \'up\' and scrolling down', function (done) {
+		var callback = sinon.spy();
 		var mark = Scrollmarks.add({
 			element: this.element,
-			callback: this.callback,
+			callback: callback,
 			direction: 'up'
 		});
 		window.scrollWithEvent(100);
 
 		setTimeout(function () {
-			this.callback.should.not.have.been.called;
+			callback.should.not.have.been.called;
 			Scrollmarks.remove(mark);
 			window.scrollWithEvent(0);
 			done();
-		}.bind(this), getTimeout());
+		}, getTimeout());
 	});
 
 	it('should trigger when direction is \'up\' and scrolling up', function (done) {
 		window.scrollTo(0, 100);
+		var callback = sinon.spy();
 		var mark = Scrollmarks.add({
 			element: this.element,
-			callback: this.callback,
+			callback: callback,
 			direction: 'up'
 		});
 
 		window.scrollWithEvent(0);
 		
 		setTimeout(function () {
-			this.callback.should.have.been.calledOnce;
+			callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
 			done();
-		}.bind(this), getTimeout());
+		}, getTimeout());
 	});
 
 	it('should trigger when direction is \'down\' and scrolling down', function (done) {
 		window.scrollTo(0, 0);
+		var callback = sinon.spy();
 		var mark = Scrollmarks.add({
 			element: this.element,
-			callback: this.callback,
+			callback: callback,
 			direction: 'down'
 		});
 		
 		window.scrollWithEvent(100);
 		
 		setTimeout(function () {
-			this.callback.should.have.been.calledOnce;
+			callback.should.have.been.calledOnce;
 			Scrollmarks.remove(mark);
 			window.scrollTo(0, 0);
 			done();
-		}.bind(this), getTimeout());
+		}, getTimeout());
 	});
 
 	it('should not trigger when direction is \'down\' and scrolling up', function (done) {
 		window.scrollTo(0, 100);
-
+		var callback = sinon.spy();
 		var mark = Scrollmarks.add({
 			element: this.element,
-			callback: this.callback,
+			callback: callback,
 			direction: 'down'
 		});
 
 		// it should be called once as the page is scrolled down when the mark is added
 		setTimeout(function () {
-			this.callback.should.have.been.calledOnce;
-			this.callback.reset();
+			callback.should.have.been.calledOnce;
+			callback.reset();
 			window.scrollWithEvent(0);
 			setTimeout(function () {
 				// but it should not be called when we scroll up
-				this.callback.should.not.have.been.called;
+				callback.should.not.have.been.called;
 				Scrollmarks.remove(mark);
 				done();
-			}.bind(this), getTimeout());
-		}.bind(this), getTimeout());
+			}, getTimeout());
+		}, getTimeout());
 	});
 });

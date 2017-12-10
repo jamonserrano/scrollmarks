@@ -4,11 +4,6 @@ describe('Callback parameter', function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
-		this.callback = sinon.spy();
-		this.params = {
-			element: this.element,
-			callback: this.callback
-		};
 	});
 
 	after(function () {
@@ -17,16 +12,20 @@ describe('Callback parameter', function () {
 
 	it('should receive the direction and the mark as parameters', function (done) {
 		window.scrollTo(0, 0);
-		var mark = Scrollmarks.add(this.params);
+		var callback = sinon.spy();		
+		var mark = Scrollmarks.add({
+			element: this.element,
+			callback: callback
+		});
 		window.scrollWithEvent(100);
 
 		setTimeout(function () {
-			this.callback.should.have.been.called;
-			this.callback.args[0].length.should.equal(2);
-			this.callback.args[0][0].should.equal('down');
-			this.callback.args[0][1].key.should.equal(mark);
+			callback.should.have.been.called;
+			callback.args[0].length.should.equal(2);
+			callback.args[0][0].should.equal('down');
+			callback.args[0][1].key.should.equal(mark);
 			Scrollmarks.remove(mark);
 			done();
-		}.bind(this), getTimeout());
+		}, getTimeout());
 	});
 });
