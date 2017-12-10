@@ -22,13 +22,15 @@ describe('Scrollmarks.stop()', function () {
 		mark = Scrollmarks.add(this.params);
 		
 		window.scrollWithEvent(100);
-		Scrollmarks.stop();
-		window.scrollWithEvent(0);
 
 		setTimeout(function () {
-			this.callback.should.have.been.calledOnce;
-			Scrollmarks.remove(mark);
-			done();
+			Scrollmarks.stop();
+			window.scrollWithEvent(0);
+			setTimeout(function () {
+				this.callback.should.have.been.calledOnce;
+				Scrollmarks.remove(mark);
+				done();
+			}.bind(this), getTimeout());
 		}.bind(this), getTimeout());
 	});
 });

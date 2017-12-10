@@ -21,6 +21,7 @@ describe('Callback parameter', function () {
 		window.scrollWithEvent(100);
 
 		setTimeout(function () {
+			this.callback.should.have.been.called;
 			this.callback.args[0].length.should.equal(2);
 			this.callback.args[0][0].should.equal('down');
 			this.callback.args[0][1].key.should.equal(mark);

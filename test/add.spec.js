@@ -31,7 +31,6 @@ describe('Scrollmarks.add()', function () {
 			var callback = sinon.spy();
 			var mark;
 			
-			document.body.style.height = '200vh';
 			window.scrollTo(0, 0);
 			mark = Scrollmarks.add({element: this.element, callback: callback});
 			window.scrollWithEvent(100);
@@ -50,7 +49,6 @@ describe('Scrollmarks.add()', function () {
 			var marks = [];
 
 			window.scrollWithEvent(0);
-			document.body.style.height = '200vh';
 			window.scrollWithEvent(100);
 			marks.push(Scrollmarks.add({element: this.element, callback: callback}));
 			marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: "down"}));

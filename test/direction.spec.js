@@ -4,6 +4,7 @@ describe('Direction parameter', function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
+
 	});
 
 	after(function () {
@@ -23,13 +24,16 @@ describe('Direction parameter', function () {
 			element: this.element,
 			callback: this.callback
 		});
-		window.scrollWithEvent(100);
-		window.scrollWithEvent(0);
 
+		window.scrollWithEvent(100);
+		
 		setTimeout(function () {
-			this.callback.should.have.been.calledTwice;
-			Scrollmarks.remove(mark);
-			done();
+			window.scrollWithEvent(0);
+			setTimeout(function () {
+				this.callback.should.have.been.calledTwice;
+				Scrollmarks.remove(mark);
+				done();
+			}.bind(this), getTimeout());
 		}.bind(this), getTimeout());
 	});
 
