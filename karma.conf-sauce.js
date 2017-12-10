@@ -50,22 +50,6 @@ module.exports = function(config) {
 			  recordVideo: false,
 			  recordScreenshots: false
 		},
-		sl_safari_latest: {
-			base: 'SauceLabs',
-			browserName: 'safari',
-			platform: 'macOS 10.12',
-			version: 'latest',
-			recordVideo: false,
-			recordScreenshots: false
-		},
-		sl_safari_previous: {
-			base: 'SauceLabs',
-			browserName: 'safari',
-			platform: 'macOS 10.12',
-			version: 'latest-1',
-			recordVideo: false,
-			recordScreenshots: false
-		},
 		sl_ie_11: {
 			base: 'SauceLabs',
 			browserName: 'internet explorer',
@@ -79,6 +63,22 @@ module.exports = function(config) {
 			browserName: 'internet explorer',
 			platform: 'Windows 7',
 			version: '10.0',
+			recordVideo: false,
+			recordScreenshots: false
+		},
+		sl_safari_latest: {
+			base: 'SauceLabs',
+			browserName: 'safari',
+			platform: 'macOS 10.12',
+			version: 'latest',
+			recordVideo: false,
+			recordScreenshots: false
+		},
+		sl_safari_previous: {
+			base: 'SauceLabs',
+			browserName: 'safari',
+			platform: 'macOS 10.12',
+			version: 'latest-1',
 			recordVideo: false,
 			recordScreenshots: false
 		}/*,
@@ -174,7 +174,7 @@ module.exports = function(config) {
   
 		// Concurrency level
 		// how many browser should be started simultaneous
-		concurrency: 1,
+		concurrency: 2,
 
 		browserDisconnectTolerance: 2,
 
