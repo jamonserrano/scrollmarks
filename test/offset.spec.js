@@ -1,4 +1,4 @@
-describe.only('Offset parameter', function () {
+describe('Offset parameter', function () {
 
 	before(function () {
 		fixture.setBase("test/fixtures");

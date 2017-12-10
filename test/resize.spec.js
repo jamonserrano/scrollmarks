@@ -1,4 +1,4 @@
-describe.only('Resize watching', function () {
+describe('Resize watching', function () {
 	it('should recalculate offsets when the document is resized', function (done) {
 		var offset = sinon.spy(function () {
 			return 0;
