@@ -5,7 +5,7 @@ var testConfig = {
 		resizeThrottle: 2,
 		idleTimeout: 0
 	},
-	bodyHeight: '2000px'
+	bodyHeight: '200vh'
 };
 
 Scrollmarks.config(testConfig.scrollmarks);

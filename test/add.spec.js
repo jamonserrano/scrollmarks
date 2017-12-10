@@ -32,6 +32,7 @@ describe('Scrollmarks.add()', function () {
 			var mark;
 			
 			window.scrollTo(0, 0);
+			Scrollmarks.stop();
 			mark = Scrollmarks.add({element: this.element, callback: callback});
 			window.scrollWithEvent(100);
 

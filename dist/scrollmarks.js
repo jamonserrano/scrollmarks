@@ -228,9 +228,10 @@
 	}
 
 	function trigger(mark) {
+		var once = mark.once;
 		mark.callback(scrollDirection, mark);
 
-		if (mark.once) {
+		if (once) {
 			remove(mark.key);
 		}
 	}

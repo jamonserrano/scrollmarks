@@ -264,9 +264,10 @@ function triggerQueue() {
  * @param {Object} mark
  */
 function trigger(mark) {
+	const once = mark.once;
 	mark.callback(scrollDirection, mark)
-
-	if (mark.once) {
+	
+	if (once) {
 		remove(mark.key);
 	}
 }
