@@ -9,7 +9,7 @@ describe('Height watching', function () {
 		fixture.cleanup();
 	});
 
-	it('should recalculate offset when document height changes', function (done) {
+	it('should recalculate offsets when document height changes', function (done) {
 		var offset = sinon.spy(function () {
 			return 0;
 		});
