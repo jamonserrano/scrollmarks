@@ -3,13 +3,17 @@ describe('Once parameter', function () {
 	before(function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
+		
 		this.element = document.getElementById('static');
+		
 		this.callback = sinon.spy();
 		this.params = {
 			element: this.element,
 			callback: this.callback,
 			once: true
 		};
+
+		window.scrollTo(0, 0);
 	});
 
 	after(function () {

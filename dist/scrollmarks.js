@@ -414,9 +414,7 @@
 		resizeTick = 1;
 	}
 
-	exports.default = { add: add, remove: remove, start: start, stop: stop, refresh: refresh, config: getSetConfig, size: function size() {
-			return scrollMarks.size;
-		} };
+	exports.default = { add: add, remove: remove, start: start, stop: stop, refresh: refresh, config: getSetConfig };
 	module.exports = exports['default'];
 });
 

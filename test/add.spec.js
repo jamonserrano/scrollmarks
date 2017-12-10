@@ -48,7 +48,7 @@ describe('Scrollmarks.add()', function () {
 			var upCallback = sinon.spy();
 			var marks = [];
 
-			window.scrollWithEvent(0);
+			window.scrollTo(0, 0);
 			window.scrollWithEvent(100);
 			marks.push(Scrollmarks.add({element: this.element, callback: callback}));
 			marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: "down"}));

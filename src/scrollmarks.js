@@ -528,4 +528,4 @@ function resetTicks() {
 	resizeTick = 1;
 }
 
-export default { add, remove, start, stop, refresh, config: getSetConfig, size: () => scrollMarks.size };
+export default { add, remove, start, stop, refresh, config: getSetConfig };
