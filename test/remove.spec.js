@@ -18,6 +18,7 @@ describe('Scrollmarks.remove()', function () {
 			element: document.getElementById('static'),
 			callback: function () {}
 		});
+		
 		Scrollmarks.remove(mark).should.be.true;
 	});
 

@@ -5,15 +5,15 @@ describe('Scrollmarks.start()', function () {
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
 			});
+			
+	beforeEach(function () {
+		Scrollmarks.stop();
+		window.scrollWithEvent(0);
+	});
 
 	after(function () {
 		fixture.cleanup();
 	});
-
-	beforeEach(function () {
-		Scrollmarks.stop();
-		window.scrollWithEvent(0);
-	})
 
 	it('should exist', function () {
 		Scrollmarks.start.should.be.a('function');

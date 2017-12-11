@@ -1,4 +1,5 @@
 describe('Idle callback', function () {
+	
 	before(function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
@@ -6,7 +7,6 @@ describe('Idle callback', function () {
 		this.offset = sinon.spy(function () {
 			return 0;
 		});
-
 		this.mark = Scrollmarks.add({
 			element: document.getElementById('static'),
 			callback: function () {},
@@ -14,18 +14,20 @@ describe('Idle callback', function () {
 		});
 	});
 
+	beforeEach(function () {
+		this.offset.reset();
+	});
+
 	after(function () {
 		Scrollmarks.remove(this.mark);
 		Scrollmarks.config(testConfig.scrollmarks);
-	});
-
-	beforeEach(function () {
-		this.offset.reset();
+		fixture.cleanup();
 	});
 
 	it('should trigger the callback instantly when idleTimeout = 0', function () {
 		Scrollmarks.config({ idleTimeout: 0});
 		Scrollmarks.refresh(this.mark);
+		
 		this.offset.should.have.been.called;
 	});
 

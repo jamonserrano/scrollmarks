@@ -1,10 +1,15 @@
 describe('Scrolling', function () {
+	
 	before(function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("multiple_elements.html");
 
 		this.el1 = document.getElementById('el1');
 		this.el2 = document.getElementById('el2');
+	});
+
+	after(function () {
+		fixture.cleanup();
 	});
 
 	it('should trigger marks from top to bottom when scrolling down', function (done) {
@@ -27,6 +32,7 @@ describe('Scrolling', function () {
 		});
 
 		scrollWithEvent(200);
+		
 		setTimeout(function () {
 			callback2.should.have.been.called;
 			Scrollmarks.remove(mark1);
@@ -75,5 +81,4 @@ describe('Scrolling', function () {
 			done();
 		}, getTimeout());
 	});
-
 });

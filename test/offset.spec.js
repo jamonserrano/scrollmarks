@@ -13,6 +13,10 @@ describe('Offset parameter', function () {
 	afterEach(function () {
 		scrollTo(0, 0);
 	});
+	
+	after(function () {
+		fixture.cleanup();
+	});
 
 	it('default value should be 0', function (done) {
 		var mark = Scrollmarks.add({
@@ -145,7 +149,7 @@ describe('Offset parameter', function () {
 		}, getTimeout());
 	});
 
-	it('should throw error when incorrect type', function () {
+	it('should not accept other values', function () {
 		calling(Scrollmarks.add).with({
 			element: this.element,
 			callback: function () {},

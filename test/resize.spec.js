@@ -1,7 +1,12 @@
 describe('Resize watching', function () {
+	
 	before(function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
+	});
+
+	after(function () {
+		fixture.cleanup();
 	});
 
 	it('should recalculate offsets when the document is resized', function (done) {
@@ -20,6 +25,7 @@ describe('Resize watching', function () {
 		
 		// not called straight away
 		offset.should.have.callCount(offsetCalls);
+		
 		// only after the timeout set by config.resizeThrottle
 		setTimeout(function () {
 			offset.should.have.callCount(offsetCalls + 1);

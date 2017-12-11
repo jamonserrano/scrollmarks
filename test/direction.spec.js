@@ -3,17 +3,63 @@ describe('Direction parameter', function () {
 	before(function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
+
 		this.element = document.getElementById('static');
-
-	});
-
-	after(function () {
-		fixture.cleanup();
+		this.callback = function () {};
 	});
 
 	afterEach(function () {
 		Scrollmarks.stop();
 	});
+
+	after(function () {
+		fixture.cleanup();
+	});	
+
+	it('should accept \'up\'', function () {
+		var params = {
+			element: this.element,
+			callback: this.callback,
+			direction: 'up'
+		};
+		var mark;
+		
+		calling(function() {
+			mark = Scrollmarks.add(params);
+		}).should.not.throw();
+		
+		Scrollmarks.remove(mark);
+	});
+
+	it('should accept \'down\'', function () {
+		var mark;
+		var params = {
+			element: this.element,
+			callback: this.callback,
+			direction: 'down'
+		};
+		
+		calling(function() {
+			mark = Scrollmarks.add(params);
+		}).should.not.throw();
+		
+		Scrollmarks.remove(mark);
+	});
+
+	it('should not accept something else', function () {
+		var params = {
+			element: this.element,
+			callback: this.callback,
+			direction: true
+		};
+		
+		calling(Scrollmarks.add).with(params).should.throw();
+
+		params.direction = 'sideways';
+		
+		calling(Scrollmarks.add).with(params).should.throw();
+	});
+
 
 	it('should trigger in both directions when param is missing', function (done) {
 		var callback = sinon.spy();

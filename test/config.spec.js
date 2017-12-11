@@ -1,4 +1,5 @@
 describe('Scrollmarks.config()', function () {
+	
 	it('should return the config when called without params', function () {
 		var result = Scrollmarks.config();
 		result.scrollThrottle.should.be.a('number');

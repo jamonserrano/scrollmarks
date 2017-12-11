@@ -1,10 +1,14 @@
 describe('Scrollmarks.stop()', function () {
+	
 	before(function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 	});
 
-	
+	after(function () {
+		fixture.cleanup();
+	});
+
 	it('should exist', function () {
 		Scrollmarks.stop.should.be.a('function');
 	});
@@ -12,7 +16,6 @@ describe('Scrollmarks.stop()', function () {
 	it('should stop listening', function (done) {
 		var callback = sinon.spy();
 		var mark;
-
 
 		Scrollmarks.start();
 		mark = Scrollmarks.add({

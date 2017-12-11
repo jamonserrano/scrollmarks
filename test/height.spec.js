@@ -13,15 +13,13 @@ describe('Height watching', function () {
 		var offset = sinon.spy(function () {
 			return 0;
 		});
-
 		var mark = Scrollmarks.add({
 			element: document.getElementById('static'),
 			callback: function () {},
 			offset: offset
 		});
-
-
 		var offsetCalls = offset.callCount;
+		
 		document.body.style.height = '100px';
 
 		setTimeout(function () {
