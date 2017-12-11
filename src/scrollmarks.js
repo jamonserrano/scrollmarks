@@ -38,7 +38,7 @@ let resized;
 // frame counter for resize events
 let resizeTick;
 // previous document height
-let previousHeight = document.body.scrollHeight;
+let previousHeight;
 
 setInitialState();
 
@@ -260,7 +260,7 @@ function triggerQueue() {
  */
 function trigger(mark) {
 	const once = mark.once;
-	mark.callback(scrollDirection, mark)
+	mark.callback(scrollDirection, mark);
 	
 	if (once) {
 		remove(mark.key);
@@ -487,7 +487,7 @@ function getSetConfig(params) {
 			scrollThrottle: config.scrollThrottle,
 			resizeThrottle: config.resizeThrottle,
 			idleTimeout: config.idleTimeout
-		 };
+		};
 	}
 	// set
 	Object.keys(params).forEach((key) => setOption(key, params[key]));

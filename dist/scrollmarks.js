@@ -52,7 +52,7 @@
 
 	var resizeTick = void 0;
 
-	var previousHeight = document.body.scrollHeight;
+	var previousHeight = void 0;
 
 	setInitialState();
 
