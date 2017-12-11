@@ -20,15 +20,15 @@ describe('Resize watching', function () {
 			offset: offset
 		});
 
-		var offsetCalls = offset.callCount;
+		offset.reset();
 		window.dispatchEvent(new CustomEvent('resize'));
 		
 		// not called straight away
-		offset.should.have.callCount(offsetCalls);
+		offset.should.not.have.been.called;
 		
 		// only after the timeout set by config.resizeThrottle
 		setTimeout(function () {
-			offset.should.have.callCount(offsetCalls + 1);
+			offset.should.have.been.called;
 			Scrollmarks.remove(mark);
 			done();
 		}, getTimeout('resize'));
