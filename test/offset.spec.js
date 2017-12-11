@@ -73,7 +73,7 @@ describe('Offset parameter', function () {
 
 	it('should accept a function', function (done) {
 		var offset = 10;
-		var functionOffset = function (element) {
+		var functionOffset = function () {
 			return offset;
 		};
 		
@@ -92,6 +92,14 @@ describe('Offset parameter', function () {
 			Scrollmarks.remove(mark);
 			done();
 		}, getTimeout());
+	});
+
+	it('should not accept a function that doesn\'t return a number', function () {
+		calling(Scrollmarks.add).with({
+			element: this.element,
+			callback: function () {},
+			offset: function () {}
+		}).should.throw(TypeError);
 	});
 
 	it('should accept a \'px\' value', function (done) {
@@ -135,5 +143,13 @@ describe('Offset parameter', function () {
 			Scrollmarks.remove(mark);
 			done();
 		}, getTimeout());
+	});
+
+	it('should throw error when incorrect type', function () {
+		calling(Scrollmarks.add).with({
+			element: this.element,
+			callback: function () {},
+			offset: true
+		}).should.throw(TypeError);
 	});
 });

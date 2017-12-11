@@ -105,10 +105,11 @@ function add(mark) {
 		throw new TypeError(errorMessage('Optional', 'debug', 'boolean', debug));
 	}
 
+	calculateTriggerPoint(mark);
+	
 	const key = index++;
 	mark.key = key;
 	scrollMarks.set(key, mark);
-	calculateTriggerPoint(mark);
 
 	if (!clock) {
 		start();
@@ -311,7 +312,13 @@ function updateTriggerPoints() {
 function calculateTriggerPoint(mark) {
 	const computedOffset = mark.computedOffset;
 	const offsetValue = isFunction(computedOffset) ? computedOffset(mark.element) : computedOffset;
+
+	if (!isNumber(offsetValue)) {
+		throw new TypeError(`Offset function must return a number, got ${offsetValue} instead`);
+	}
+
 	mark.triggerPoint = window.pageYOffset + mark.element.getBoundingClientRect().top - offsetValue;
+	
 	if (mark.debug) {
 		setHelperElement(mark);
 	}
