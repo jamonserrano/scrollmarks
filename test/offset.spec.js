@@ -6,14 +6,12 @@ describe('Offset parameter', function () {
 		
 		this.element = document.getElementById('static');
 		this.offsetTop = this.element.offsetTop;
+	});
 
+	beforeEach(function () {
 		scrollTo(0, 0);
 	});
 
-	afterEach(function () {
-		scrollTo(0, 0);
-	});
-	
 	after(function () {
 		fixture.cleanup();
 	});

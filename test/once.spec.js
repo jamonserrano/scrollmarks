@@ -8,6 +8,10 @@ describe('Once parameter', function () {
 		this.callback = function () {};
 	});
 
+	beforeEach(function () {
+		scrollTo(0, 0);
+	});
+
 	after(function () {
 		fixture.cleanup();
 	});
@@ -43,9 +47,7 @@ describe('Once parameter', function () {
 		calling(Scrollmarks.add).with(params).should.throw();
 	});
 
-	it('should remove the mark after the callback is called', function (done) {
-		window.scrollTo(0, 0);
-		
+	it('should remove the mark after the callback is called', function (done) {		
 		var callback = sinon.spy();		
 		var mark = Scrollmarks.add({
 			element: document.getElementById('static'),

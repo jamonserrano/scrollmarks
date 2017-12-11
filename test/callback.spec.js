@@ -7,6 +7,10 @@ describe('Callback parameter', function () {
 		this.element = document.getElementById('static');
 	});
 
+	beforeEach(function () {
+		scrollTo(0, 0);
+	});
+
 	after(function () {
 		fixture.cleanup();
 	});
@@ -38,9 +42,7 @@ describe('Callback parameter', function () {
 		}).should.throw(TypeError);
 	});
 
-	it('should receive the direction and the mark as parameters', function (done) {
-		window.scrollTo(0, 0);
-		
+	it('should receive the direction and the mark as parameters', function (done) {		
 		var callback = sinon.spy();		
 		var mark = Scrollmarks.add({
 			element: this.element,

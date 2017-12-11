@@ -8,8 +8,8 @@ describe('Direction parameter', function () {
 		this.callback = function () {};
 	});
 
-	afterEach(function () {
-		Scrollmarks.stop();
+	beforeEach(function () {
+		scrollTo(0, 0);
 	});
 
 	after(function () {
@@ -116,7 +116,6 @@ describe('Direction parameter', function () {
 	});
 
 	it('should trigger when direction is \'down\' and scrolling down', function (done) {
-		window.scrollTo(0, 0);
 		var callback = sinon.spy();
 		var mark = Scrollmarks.add({
 			element: this.element,

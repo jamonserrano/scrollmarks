@@ -8,6 +8,10 @@ describe('Scrolling', function () {
 		this.el2 = document.getElementById('el2');
 	});
 
+	beforeEach(function () {
+		scrollTo(0, 0);
+	});
+
 	after(function () {
 		fixture.cleanup();
 	});

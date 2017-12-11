@@ -7,6 +7,10 @@ describe('Scrollmarks.add()', function () {
 		this.element = document.getElementById('static');
 	});
 
+	beforeEach(function () {
+		scrollTo(0, 0);
+	});
+
 	after(function () {
 		fixture.cleanup();
 	});
@@ -27,10 +31,9 @@ describe('Scrollmarks.add()', function () {
 		var mark;
 		var callback = sinon.spy();
 		
-		window.scrollTo(0, 0);
 		Scrollmarks.stop();
 		mark = Scrollmarks.add({element: this.element, callback: callback});
-		window.scrollWithEvent(100);
+		scrollWithEvent(100);
 
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;
@@ -45,8 +48,7 @@ describe('Scrollmarks.add()', function () {
 		var upCallback = sinon.spy();
 		var marks = [];
 
-		window.scrollTo(0, 0);
-		window.scrollWithEvent(100);
+		scrollWithEvent(100);
 		marks.push(Scrollmarks.add({element: this.element, callback: callback}));
 		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: "down"}));
 		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: "up"}));

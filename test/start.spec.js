@@ -4,11 +4,11 @@ describe('Scrollmarks.start()', function () {
 		fixture.setBase("test/fixtures");
 		fixture.load("static_position.html");
 		this.element = document.getElementById('static');
-			});
+	});
 			
 	beforeEach(function () {
 		Scrollmarks.stop();
-		window.scrollWithEvent(0);
+		scrollTo(0, 0);
 	});
 
 	after(function () {
@@ -41,7 +41,6 @@ describe('Scrollmarks.start()', function () {
 		var upCallback = sinon.spy();
 		var marks = [];
 
-		window.scrollWithEvent(0);
 		marks.push(Scrollmarks.add({element: this.element, callback: callback}));
 		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: "down"}));
 		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: "up"}));
