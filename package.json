@@ -1,7 +1,7 @@
 {
   "name": "scrollmarks",
   "version": "0.1.0",
-  "description": "",
+  "description": "Scrollmarks is a compact library that calls a function when you scroll to an element",
   "main": "dist/scrollmarks.js",
   "esnext": "src/scrollmarks.js",
   "scripts": {
