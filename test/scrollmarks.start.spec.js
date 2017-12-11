@@ -1,8 +1,8 @@
 describe('Scrollmarks.start()', function () {
 	
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 		this.element = document.getElementById('static');
 	});
 			
@@ -35,15 +35,15 @@ describe('Scrollmarks.start()', function () {
 		}, getTimeout());
 	});
 
-	it('should trigger callback if element is passed and direction is not "up"', function (done) {
+	it('should trigger callback if element is passed and direction is not \'up\'', function (done) {
 		var callback = sinon.spy();
 		var downCallback = sinon.spy();
 		var upCallback = sinon.spy();
 		var marks = [];
 
 		marks.push(Scrollmarks.add({element: this.element, callback: callback}));
-		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: "down"}));
-		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: "up"}));
+		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: 'down'}));
+		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: 'up'}));
 		Scrollmarks.stop();
 		window.scrollWithEvent(100);
 		Scrollmarks.start();

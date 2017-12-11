@@ -1,8 +1,8 @@
 describe('Callback parameter', function () {
 	
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 		
 		this.element = document.getElementById('static');
 	});
@@ -38,7 +38,7 @@ describe('Callback parameter', function () {
 	it('should not accept other values', function () {
 		calling(Scrollmarks.add).with({
 			element: this.element,
-			callback: "a"
+			callback: 'a'
 		}).should.throw(TypeError);
 	});
 

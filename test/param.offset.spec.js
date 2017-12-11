@@ -1,8 +1,8 @@
 describe('Offset parameter', function () {
 
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 		
 		this.element = document.getElementById('static');
 		this.offsetTop = this.element.offsetTop;
@@ -33,7 +33,7 @@ describe('Offset parameter', function () {
 		}, getTimeout());
 	});
 
-	it('should accept a positive number', function (done) {
+	it('should accept and use a positive number', function (done) {
 		var offset = 10;
 		
 		var mark = Scrollmarks.add({
@@ -53,7 +53,7 @@ describe('Offset parameter', function () {
 		}, getTimeout());
 	});
 
-	it('should accept a negative number', function (done) {
+	it('should accept and use a negative number', function (done) {
 		var offset = -10;
 		
 		var mark = Scrollmarks.add({
@@ -73,7 +73,7 @@ describe('Offset parameter', function () {
 		}, getTimeout());
 	});
 
-	it('should accept a function', function (done) {
+	it('should accept and use a function', function (done) {
 		var offset = 10;
 		var functionOffset = function () {
 			return offset;
@@ -104,7 +104,7 @@ describe('Offset parameter', function () {
 		}).should.throw(TypeError);
 	});
 
-	it('should accept a \'px\' value', function (done) {
+	it('should accept and use a \'px\' value', function (done) {
 		var offset = 10;
 		var pxOffset = offset + 'px';
 		
@@ -125,7 +125,7 @@ describe('Offset parameter', function () {
 		}, getTimeout());
 	});
 
-	it('should accept a \'%\' value', function (done) {
+	it('should accept use a \'%\' value', function (done) {
 		var offset = 1;
 		var percentOffset = offset + '%';
 		var expectedOffset = window.innerHeight * offset / 100;

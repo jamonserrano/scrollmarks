@@ -1,8 +1,8 @@
 describe('Scrollmarks.add()', function () {
 
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 		
 		this.element = document.getElementById('static');
 	});
@@ -42,7 +42,7 @@ describe('Scrollmarks.add()', function () {
 		}, getTimeout());
 	});
 
-	it('should trigger callback if element is passed and direction is not "up"', function (done) {
+	it('should trigger callback if element is passed and direction is not \'up\'', function (done) {
 		var callback = sinon.spy();
 		var downCallback = sinon.spy();
 		var upCallback = sinon.spy();
@@ -50,8 +50,8 @@ describe('Scrollmarks.add()', function () {
 
 		scrollWithEvent(100);
 		marks.push(Scrollmarks.add({element: this.element, callback: callback}));
-		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: "down"}));
-		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: "up"}));
+		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: 'down'}));
+		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: 'up'}));
 		
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;

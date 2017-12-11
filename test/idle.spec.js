@@ -1,8 +1,8 @@
 describe('Idle callback', function () {
 	
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 
 		this.offset = sinon.spy(function () {
 			return 0;

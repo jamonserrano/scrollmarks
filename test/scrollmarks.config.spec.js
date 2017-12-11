@@ -33,8 +33,8 @@ describe('Scrollmarks.config()', function () {
 		calling(Scrollmarks.config).with({ resizeThrottle: 0 }).should.throw(RangeError);
 		calling(Scrollmarks.config).with({ idleTimeout: -1 }).should.throw(RangeError);
 
-		calling(Scrollmarks.config).with({ scrollThrottle: "a" }).should.throw(TypeError);
-		calling(Scrollmarks.config).with({ resizeThrottle: "a" }).should.throw(TypeError);
-		calling(Scrollmarks.config).with({ idleTimeout: "a" }).should.throw(TypeError);
+		calling(Scrollmarks.config).with({ scrollThrottle: 'a' }).should.throw(TypeError);
+		calling(Scrollmarks.config).with({ resizeThrottle: 'a' }).should.throw(TypeError);
+		calling(Scrollmarks.config).with({ idleTimeout: 'a' }).should.throw(TypeError);
 	});
 });

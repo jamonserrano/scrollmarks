@@ -1,8 +1,8 @@
 describe('Element parameter', function () {
 
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 	});
 
 	after(function () {
@@ -27,6 +27,6 @@ describe('Element parameter', function () {
 	});
 	
 	it('should not accept other values', function () {
-		calling(Scrollmarks.add).with({ element: "a", callback: this.emptyCallback }).should.throw(TypeError);
+		calling(Scrollmarks.add).with({ element: 'a', callback: this.emptyCallback }).should.throw(TypeError);
 	});
 });

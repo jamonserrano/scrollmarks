@@ -1,8 +1,8 @@
 describe('Scrollmarks.refresh()', function () {
 	
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("multiple_elements.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('multiple_elements.html');
 		
 		this.offset1 = sinon.spy(function () {
 			return 20;

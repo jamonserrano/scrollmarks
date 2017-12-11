@@ -1,8 +1,8 @@
 describe('Scrolling', function () {
 	
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("multiple_elements.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('multiple_elements.html');
 
 		this.el1 = document.getElementById('el1');
 		this.el2 = document.getElementById('el2');

@@ -1,8 +1,8 @@
 describe('Height watching', function () {
 
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 	});
 
 	after(function () {

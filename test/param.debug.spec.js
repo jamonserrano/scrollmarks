@@ -1,8 +1,8 @@
 describe('Debug parameter', function () {
 	
 	before(function () {
-		fixture.setBase("test/fixtures");
-		fixture.load("static_position.html");
+		fixture.setBase('test/fixtures');
+		fixture.load('static_position.html');
 
 		this.element = document.getElementById('static');
 		this.callback = function () {};
