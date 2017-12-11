@@ -78,7 +78,7 @@ If you want to restrict the callback to one direction, use the `direction` param
 Scrollmarks.add({
 	element: document.querySelector('.my-element'),
 	direction: 'up',
-	callback: () => {} // only called when scrolling down
+	callback: () => {} // only called when scrolling up
 });
 ```
 
