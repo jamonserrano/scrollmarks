@@ -17,8 +17,8 @@
 		value: true
 	});
 	/**
-  * Scrollmarks
   * @license
+  * Scrollmarks 1.0.1
   * Copyright (c) 2017 Viktor Honti
   * Licensed under the MIT License.
   * https://github.com/jamonserrano/scrollmarks
