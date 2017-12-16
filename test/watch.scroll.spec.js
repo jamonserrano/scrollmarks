@@ -11,7 +11,7 @@ describe('Scrolling', function () {
 	beforeEach(function () {
 		scrollTo(0, 0);
 	});
-
+	
 	after(function () {
 		fixture.cleanup();
 	});
@@ -45,7 +45,7 @@ describe('Scrolling', function () {
 		}, getTimeout());
 	});
 
-	it('should trigger marks from top to bottom when scrolling down', function (done) {
+	it('should trigger marks from bottom to top when scrolling up', function (done) {
 		var initialized = false;
 		scrollTo(0, 200);
 		
@@ -70,19 +70,21 @@ describe('Scrolling', function () {
 			element: this.el2,
 			callback: callback2
 		});
-
-		// callbacks are triggered when adding because of the scroll position, so we reset them
-		callback1.reset();
-		callback2.reset();
-		initialized = true;
-
-		scrollWithEvent(0);
 		
 		setTimeout(function () {
-			callback1.should.have.been.called;
-			Scrollmarks.remove(mark1);
-			Scrollmarks.remove(mark2);
-			done();
+			// callbacks are triggered when adding because of the scroll position, so we reset them
+			callback1.reset();
+			callback2.reset();
+			initialized = true;
+
+			scrollWithEvent(0);
+			
+			setTimeout(function () {
+				callback1.should.have.been.called;
+				Scrollmarks.remove(mark1);
+				Scrollmarks.remove(mark2);
+				done();
+			}, getTimeout());
 		}, getTimeout());
 	});
 });

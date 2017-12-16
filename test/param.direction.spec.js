@@ -99,6 +99,7 @@ describe('Direction parameter', function () {
 
 	it('should trigger when direction is \'up\' and scrolling up', function (done) {
 		window.scrollTo(0, 100);
+		
 		var callback = sinon.spy();
 		var mark = Scrollmarks.add({
 			element: this.element,
@@ -106,12 +107,13 @@ describe('Direction parameter', function () {
 			direction: 'up'
 		});
 
-		window.scrollWithEvent(0);
-		
 		setTimeout(function () {
-			callback.should.have.been.calledOnce;
-			Scrollmarks.remove(mark);
-			done();
+			window.scrollWithEvent(0);
+			setTimeout(function () {
+				callback.should.have.been.calledOnce;
+				Scrollmarks.remove(mark);
+				done();
+			}, getTimeout());
 		}, getTimeout());
 	});
 

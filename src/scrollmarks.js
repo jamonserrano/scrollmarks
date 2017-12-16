@@ -113,9 +113,6 @@ function add(mark) {
 
 	if (!clock) {
 		start();
-	} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
-		// we don't know how we got to the current position so only trigger the mark if it's above and accepts downscroll
-		trigger(mark);
 	}
 
 	return key;
@@ -141,8 +138,6 @@ function remove(key) {
  */
 function start() {
 	if (!clock && scrollMarks.size) {
-		checkMarks();
-
 		window.addEventListener('scroll', onScroll, listenerProperties);
 		window.addEventListener('resize', onResize, listenerProperties);
 		clock = window.requestAnimationFrame(checkState);
@@ -183,6 +178,8 @@ function onResize() {
  * Single handler for scroll, document height, and page resize
  */
 function checkState() {
+	clock = window.requestAnimationFrame(checkState);
+
 	// resize check
 	if (resizeTick === config.resizeThrottle) {
 		if (resized) {
@@ -213,7 +210,6 @@ function checkState() {
 		scrollTick++;
 	}
 
-	clock = window.requestAnimationFrame(checkState);
 }
 
 

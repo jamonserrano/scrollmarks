@@ -119,8 +119,6 @@
 
 		if (!clock) {
 			start();
-		} else if (directionMatches(direction, 'down') && mark.triggerPoint <= window.pageYOffset) {
-			trigger(mark);
 		}
 
 		return key;
@@ -136,8 +134,6 @@
 
 	function start() {
 		if (!clock && scrollMarks.size) {
-			checkMarks();
-
 			window.addEventListener('scroll', onScroll, listenerProperties);
 			window.addEventListener('resize', onResize, listenerProperties);
 			clock = window.requestAnimationFrame(checkState);
@@ -167,6 +163,8 @@
 	}
 
 	function checkState() {
+		clock = window.requestAnimationFrame(checkState);
+
 		if (resizeTick === config.resizeThrottle) {
 			if (resized) {
 				idle(updateTriggerPoints);
@@ -192,8 +190,6 @@
 		} else {
 			scrollTick++;
 		}
-
-		clock = window.requestAnimationFrame(checkState);
 	}
 
 	function checkMarks() {
