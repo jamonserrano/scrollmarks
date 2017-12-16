@@ -12,24 +12,31 @@ describe('Debug parameter', function () {
 		fixture.cleanup();
 	});
 	
-	it('should accept a boolean', function () {
+	it('should accept and use a boolean', function () {
 		var mark;
 		var params = {
 			element: this.element,
 			callback: this.callback,
 			debug: true
 		};
-		
-		calling(function() {
-			mark = Scrollmarks.add(params);
-		}).should.not.throw();
-		Scrollmarks.remove(mark);
+		var helpers = document.getElementsByClassName('scrollmarks-helper');
 
-		params.debug = false;	
-		
 		calling(function() {
 			mark = Scrollmarks.add(params);
 		}).should.not.throw();
+		helpers.length.should.equal(1);
+		Scrollmarks.remove(mark);
+		helpers.length.should.equal(0);
+		
+		params = {
+			element: this.element,
+			callback: this.callback,
+			debug: false
+		};
+		calling(function() {
+			mark = Scrollmarks.add(params);
+		}).should.not.throw();
+		helpers.length.should.equal(0);
 		Scrollmarks.remove(mark);
 	});
 

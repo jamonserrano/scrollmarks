@@ -125,6 +125,8 @@ function add(mark) {
  * @return {boolean} delete success
  */
 function remove(key) {
+	removeHelperElement(key);
+
 	const success = scrollMarks.delete(key);
 	if (!scrollMarks.size) {
 		stop();
@@ -350,19 +352,24 @@ function idle(callback) {
 	}
 }
 
+/**
+ * Create helper element for debugging
+ * @param {Object} mark 
+ */
 function setHelperElement(mark) {
 	let helperElement = mark.helper;
-	
+
 	if (!helperElement) {
 		helperElement = document.createElement('div');
+		helperElement.className = 'scrollmarks-helper';
 		const properties = {
-			borderTop: '1px solid red',
-			color: 'red',
-			fontFamily: 'sans-serif',
-			fontSize: '14px',
+			background: 'rgba(104,207,147,0.5)',
+			borderTop: '1px solid #333',
+			color: '#333',
+			font: '14px monospace',
 			left: '0',
 			minHeight: '20px',
-			padding: '3px',
+			padding: '0 3px',
 			position: 'absolute',
 			width: '100%'
 		};
@@ -375,6 +382,19 @@ function setHelperElement(mark) {
 
 	helperElement.style.top = `${mark.triggerPoint}px`;
 	helperElement.innerHTML = `offset: ${mark.offset}, computedOffset: ${isFunction(mark.computedOffset) ? mark.computedOffset(mark.element) : mark.computedOffset}, triggerPoint: ${mark.triggerPoint}px`;
+}
+
+/**
+ * Remove helper element
+ * @param {number} key 
+ */
+function removeHelperElement(key) {
+	// remove helper element
+	const mark = scrollMarks.get(key);
+
+	if (mark && mark.helper) {
+		document.body.removeChild(mark.helper);
+	}
 }
 
 /**

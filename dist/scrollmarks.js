@@ -125,6 +125,8 @@
 	}
 
 	function remove(key) {
+		removeHelperElement(key);
+
 		var success = scrollMarks.delete(key);
 		if (!scrollMarks.size) {
 			stop();
@@ -289,14 +291,15 @@
 
 		if (!helperElement) {
 			helperElement = document.createElement('div');
+			helperElement.className = 'scrollmarks-helper';
 			var properties = {
-				borderTop: '1px solid red',
-				color: 'red',
-				fontFamily: 'sans-serif',
-				fontSize: '14px',
+				background: 'rgba(104,207,147,0.5)',
+				borderTop: '1px solid #333',
+				color: '#333',
+				font: '14px monospace',
 				left: '0',
 				minHeight: '20px',
-				padding: '3px',
+				padding: '0 3px',
 				position: 'absolute',
 				width: '100%'
 			};
@@ -311,6 +314,14 @@
 
 		helperElement.style.top = mark.triggerPoint + 'px';
 		helperElement.innerHTML = 'offset: ' + mark.offset + ', computedOffset: ' + (isFunction(mark.computedOffset) ? mark.computedOffset(mark.element) : mark.computedOffset) + ', triggerPoint: ' + mark.triggerPoint + 'px';
+	}
+
+	function removeHelperElement(key) {
+		var mark = scrollMarks.get(key);
+
+		if (mark && mark.helper) {
+			document.body.removeChild(mark.helper);
+		}
 	}
 
 	function createMockMap() {
