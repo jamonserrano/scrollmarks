@@ -14,7 +14,7 @@ Scrollmarks is inspired by the awesome [Waypoints](http://imakewebthings.com/way
 * Handles resize events and document height changes
 * Only handles vertical scrolling of the whole document
 * Customizable responsiveness and performance
-* [Fast](https://jsperf.com/scrollmarks-vs-waypoints-init) and small (9.9KB, 2.2KB minified & gzipped)
+* [Fast](https://jsperf.com/scrollmarks-vs-waypoints-init) and small (10.1KB, 2.3KB minified & gzipped)
 * Light on browser resources
 * Only supports evergreen browsers and IE10+
 
