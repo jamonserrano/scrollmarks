@@ -71,6 +71,7 @@ describe('Direction parameter', function () {
 		window.scrollWithEvent(100);
 		
 		setTimeout(function () {
+			callback.should.have.been.calledOnce;
 			window.scrollWithEvent(0);
 			setTimeout(function () {
 				callback.should.have.been.calledTwice;
