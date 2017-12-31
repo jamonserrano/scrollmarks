@@ -10,8 +10,6 @@
 const scrollMarks = window.Map ? new Map() : createMockMap();
 // index of scrollmarks
 let index = 0;
-// queue for triggered marks
-let queue = [];
 
 // configuration
 const config = {
@@ -214,11 +212,11 @@ function checkState() {
 
 }
 
-
 /**
  * Checks if scrollmarks should be triggered
  */
 function checkMarks() {
+	const queue = [];
 	// get scroll position and direction
 	const currentScroll = window.pageYOffset;
 	scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
@@ -236,21 +234,22 @@ function checkMarks() {
 		}
 	});
 	// trigger affected marks
-	triggerQueue();
+	if (queue.length) {
+		triggerQueue(queue);
+	}
 	// prepare for next run
 	previousScroll = currentScroll;
 }
 
 /**
  * Trigger affected scrollmarks
+ * @param {Array} queue
  */
-function triggerQueue() {
+function triggerQueue(queue) {
 	// put trigger marks in order
 	queue.sort(scrollDirection === 'down' ? sortAscending : sortDescending);
 	// call each mark
 	queue.forEach(trigger);
-	// empty queue
-	queue = [];
 }
 
 /**

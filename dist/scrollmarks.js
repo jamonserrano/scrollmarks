@@ -28,8 +28,6 @@
 
 	var index = 0;
 
-	var queue = [];
-
 	var config = {
 		scrollThrottle: 10,
 
@@ -195,6 +193,8 @@
 	}
 
 	function checkMarks() {
+		var queue = [];
+
 		var currentScroll = window.pageYOffset;
 		scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
 
@@ -210,17 +210,17 @@
 			}
 		});
 
-		triggerQueue();
+		if (queue.length) {
+			triggerQueue(queue);
+		}
 
 		previousScroll = currentScroll;
 	}
 
-	function triggerQueue() {
+	function triggerQueue(queue) {
 		queue.sort(scrollDirection === 'down' ? sortAscending : sortDescending);
 
 		queue.forEach(trigger);
-
-		queue = [];
 	}
 
 	function trigger(mark) {
