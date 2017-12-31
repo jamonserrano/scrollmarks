@@ -1,6 +1,6 @@
 /**
  * @license
- * Scrollmarks 1.0.1
+ * Scrollmarks 1.0.2
  * Copyright (c) 2017 Viktor Honti
  * Licensed under the MIT License.
  * https://github.com/jamonserrano/scrollmarks
