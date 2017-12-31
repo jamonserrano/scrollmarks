@@ -294,15 +294,16 @@
 			helperElement = document.createElement('div');
 			helperElement.className = 'scrollmarks-helper';
 			var properties = {
-				background: 'rgba(104,207,147,0.5)',
-				borderTop: '1px solid #333',
+				background: '#67CF93',
+				borderTop: '2px solid',
 				color: '#333',
 				font: '14px monospace',
 				left: '0',
 				minHeight: '20px',
 				padding: '0 3px',
 				position: 'absolute',
-				width: '100%'
+				width: '100%',
+				zIndex: 9999
 			};
 
 			Object.keys(properties).forEach(function (property) {
