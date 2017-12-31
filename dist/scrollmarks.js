@@ -117,8 +117,9 @@
 
 		if (!clock) {
 			start();
+		} else if (directionMatches(direction, 'down') && mark.triggerPoint <= previousScroll) {
+			trigger(mark);
 		}
-
 		return key;
 	}
 

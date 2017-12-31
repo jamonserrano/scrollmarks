@@ -47,19 +47,24 @@ describe('Scrollmarks.add()', function () {
 		var downCallback = sinon.spy();
 		var upCallback = sinon.spy();
 		var marks = [];
+		var element = this.element;
 
 		scrollWithEvent(100);
-		marks.push(Scrollmarks.add({element: this.element, callback: callback}));
-		marks.push(Scrollmarks.add({element: this.element, callback: downCallback, direction: 'down'}));
-		marks.push(Scrollmarks.add({element: this.element, callback: upCallback, direction: 'up'}));
+		// the first mark is checked in the regular loop
+		marks.push(Scrollmarks.add({element: element, callback: callback}));
 		
 		setTimeout(function () {
 			callback.should.have.been.calledOnce;
+			// subsequent marks are checked out of the loop as soon as they are added
+			marks.push(Scrollmarks.add({element: element, callback: downCallback, direction: 'down'}));
+			marks.push(Scrollmarks.add({element: element, callback: upCallback, direction: 'up'}));	
+			
 			downCallback.should.have.been.calledOnce;
 			upCallback.should.not.have.been.called;
+			
 			marks.forEach(function (mark) {
 				Scrollmarks.remove(mark);
-			})
+			});
 			done();
 		}, getTimeout());
 	});

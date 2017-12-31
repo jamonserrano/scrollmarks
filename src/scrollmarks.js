@@ -111,8 +111,11 @@ function add(mark) {
 
 	if (!clock) {
 		start();
+	} else if (directionMatches(direction, 'down') && mark.triggerPoint <= previousScroll) {
+		// we need to check newly added marks manually because the scroll position can be anything
+		// even without a scroll event (e.g. page reload)
+		trigger(mark);
 	}
-
 	return key;
 }
 
