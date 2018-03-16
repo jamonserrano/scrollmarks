@@ -26,8 +26,6 @@
 
 	var scrollMarks = window.Map ? new Map() : createMockMap();
 
-	var index = 0;
-
 	var config = {
 		scrollThrottle: 10,
 
@@ -36,25 +34,25 @@
 		idleTimeout: 100
 	};
 
-	var clock = void 0;
+	var hasIdleCallback = Boolean(window.requestIdleCallback);
 
-	var scrolled = void 0;
+	var index = 0;
 
-	var scrollTick = void 0;
+	var active = false;
 
-	var previousScroll = void 0;
+	var scrolled = false;
+
+	var scrollTick = 1;
+
+	var previousScroll = 0;
 
 	var scrollDirection = void 0;
 
-	var resized = void 0;
+	var resized = false;
 
-	var resizeTick = void 0;
+	var resizeTick = 1;
 
-	var previousHeight = void 0;
-
-	setInitialState();
-
-	var hasIdleCallback = Boolean(window.requestIdleCallback);
+	var previousHeight = document.body.scrollHeight;
 
 	var listenerProperties = false;
 
@@ -65,6 +63,10 @@
 			};
 		}
 	});
+
+	window.addEventListener('scroll', onScroll, listenerProperties);
+	window.addEventListener('resize', onResize, listenerProperties);
+	window.requestAnimationFrame(checkState);
 
 	function add(mark) {
 		var element = mark.element,
@@ -115,11 +117,12 @@
 		mark.key = key;
 		scrollMarks.set(key, mark);
 
-		if (!clock) {
-			start();
-		} else if (directionMatches(direction, 'down') && mark.triggerPoint <= previousScroll) {
+		if (directionMatches(direction, 'down') && mark.triggerPoint <= previousScroll) {
 			trigger(mark);
 		}
+
+		start();
+
 		return key;
 	}
 
@@ -134,21 +137,11 @@
 	}
 
 	function start() {
-		if (!clock && scrollMarks.size) {
-			window.addEventListener('scroll', onScroll, listenerProperties);
-			window.addEventListener('resize', onResize, listenerProperties);
-			clock = window.requestAnimationFrame(checkState);
-		}
+		active = true;
 	}
 
 	function stop() {
-		if (clock) {
-			window.cancelAnimationFrame(clock);
-			window.removeEventListener('scroll', onScroll, listenerProperties);
-			window.removeEventListener('resize', onResize, listenerProperties);
-
-			setInitialState();
-		}
+		active = false;
 	}
 
 	function onScroll() {
@@ -164,7 +157,7 @@
 	}
 
 	function checkState() {
-		clock = window.requestAnimationFrame(checkState);
+		window.requestAnimationFrame(checkState);
 
 		if (resizeTick === config.resizeThrottle) {
 			if (resized) {
@@ -194,25 +187,27 @@
 	}
 
 	function checkMarks() {
-		var queue = [];
-
 		var currentScroll = window.pageYOffset;
-		scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
+		if (active) {
+			var queue = [];
 
-		scrollMarks.forEach(function (mark) {
-			var markDirection = mark.direction;
+			scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
 
-			if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
-				var triggerPoint = mark.triggerPoint;
+			scrollMarks.forEach(function (mark) {
+				var markDirection = mark.direction;
 
-				if (previousScroll < triggerPoint === triggerPoint <= currentScroll) {
-					queue.push(mark);
+				if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
+					var triggerPoint = mark.triggerPoint;
+
+					if (previousScroll < triggerPoint === triggerPoint <= currentScroll) {
+						queue.push(mark);
+					}
 				}
-			}
-		});
+			});
 
-		if (queue.length) {
-			triggerQueue(queue);
+			if (queue.length) {
+				triggerQueue(queue);
+			}
 		}
 
 		previousScroll = currentScroll;
@@ -404,9 +399,8 @@
 			return setOption(key, params[key]);
 		});
 
-		if (clock) {
-			resetTicks();
-		}
+		scrollTick = 1;
+		resizeTick = 1;
 	}
 
 	function setOption(key, value) {
@@ -421,20 +415,6 @@
 		} else {
 			config[key] = value;
 		}
-	}
-
-	function setInitialState() {
-		clock = 0;
-		previousScroll = 0;
-		previousHeight = document.body.scrollHeight;
-		scrolled = false;
-		resized = false;
-		resetTicks();
-	}
-
-	function resetTicks() {
-		scrollTick = 1;
-		resizeTick = 1;
 	}
 
 	exports.default = { add: add, remove: remove, start: start, stop: stop, refresh: refresh, config: getSetConfig };

@@ -163,6 +163,7 @@ Scrollmarks.refresh();
 The id of the mark.
 
 
+
 ### Scrollmarks.stop()
 Stops watching. No callbacks will be triggered.
 
@@ -170,21 +171,16 @@ Stops watching. No callbacks will be triggered.
 Scrollmarks.stop();
 ```
 
-> Although Scrollmarks stops automatically when there are no elements to watch, you might want to stop it manually.
-
-
 ### Scrollmarks.start()
-Starts watching.
+Starts watching. All callbacks will be triggered.
 
 ```js
 Scrollmarks.start();
 ```
 
-> Manual restarting is only required if haven't added any marks since calling `Scrollmarks.stop()`.
-
 ### Scrollmarks.config({parameters})
 
-Sets or gets configuration parameters. When called with a parameters object sets the configuration. When called without parameters returns the configuration.
+Sets or gets configuration parameters. When called with a parameters object sets the configuration. Returns the configuration when called without parameters.
 
 ```js
 Scrollmarks.config({

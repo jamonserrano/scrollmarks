@@ -54,7 +54,7 @@ describe('Scrollmarks.start()', function () {
 			upCallback.should.not.have.been.called;
 			marks.forEach(function (mark) {
 				Scrollmarks.remove(mark);
-			})
+			});
 			done();
 		}, getTimeout());
 	});

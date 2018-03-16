@@ -8,9 +8,6 @@
 
 // store for scrollmarks
 const scrollMarks = window.Map ? new Map() : createMockMap();
-// index of scrollmarks
-let index = 0;
-
 // configuration
 const config = {
 	// throttle for scroll events (configurable)
@@ -20,28 +17,27 @@ const config = {
 	// maximum allowed timeout (configurable, 0 to trigger instantly)
 	idleTimeout: 100
 };
+// browser supports idle callback
+const hasIdleCallback = Boolean(window.requestIdleCallback);
 
-// central clock, 0 when stopped, arbitrary number (the return value of requestAnimationFrame) when running
-let clock;
+// index of scrollmarks
+let index = 0;
+// actively listening
+let active = false;
 // document was scrolled
-let scrolled;
+let scrolled = false;
 // frame counter for scroll events
-let scrollTick;
+let scrollTick = 1;
 // previous scroll position;
-let previousScroll;
+let previousScroll = 0;
 // scroll direction
 let scrollDirection;
 // document was resized
-let resized;
+let resized = false;
 // frame counter for resize events
-let resizeTick;
+let resizeTick = 1;
 // previous document height
-let previousHeight;
-
-setInitialState();
-
-// browser supports idle callback
-const hasIdleCallback = Boolean(window.requestIdleCallback);
+let previousHeight = document.body.scrollHeight;
 
 // event listener properties (false by default)
 let listenerProperties = false;
@@ -53,6 +49,10 @@ window.addEventListener("test", null, {
 		}
 	}
 });
+
+window.addEventListener('scroll', onScroll, listenerProperties);
+window.addEventListener('resize', onResize, listenerProperties);
+window.requestAnimationFrame(checkState);
 
 /**
  * Add a new scrollmark
@@ -109,13 +109,13 @@ function add(mark) {
 	mark.key = key;
 	scrollMarks.set(key, mark);
 
-	if (!clock) {
-		start();
-	} else if (directionMatches(direction, 'down') && mark.triggerPoint <= previousScroll) {
-		// we need to check newly added marks manually because the scroll position can be anything
-		// even without a scroll event (e.g. page reload)
+	// we need to check newly added marks manually because the scroll position can be anything, even without a scroll event (e.g. page reload)
+	if (directionMatches(direction, 'down') && mark.triggerPoint <= previousScroll) {
 		trigger(mark);
 	}
+
+	start();
+
 	return key;
 }
 
@@ -140,11 +140,7 @@ function remove(key) {
  * @public
  */
 function start() {
-	if (!clock && scrollMarks.size) {
-		window.addEventListener('scroll', onScroll, listenerProperties);
-		window.addEventListener('resize', onResize, listenerProperties);
-		clock = window.requestAnimationFrame(checkState);
-	}
+	active = true;
 }
 
 /**
@@ -152,13 +148,7 @@ function start() {
  * @public
  */
 function stop() {
-	if (clock) {
-		window.cancelAnimationFrame(clock);
-		window.removeEventListener('scroll', onScroll, listenerProperties);
-		window.removeEventListener('resize', onResize, listenerProperties);
-
-		setInitialState();
-	}
+	active = false;
 }
 
 /**
@@ -181,7 +171,7 @@ function onResize() {
  * Single handler for scroll, document height, and page resize
  */
 function checkState() {
-	clock = window.requestAnimationFrame(checkState);
+	window.requestAnimationFrame(checkState);
 
 	// resize check
 	if (resizeTick === config.resizeThrottle) {
@@ -219,26 +209,28 @@ function checkState() {
  * Checks if scrollmarks should be triggered
  */
 function checkMarks() {
-	const queue = [];
-	// get scroll position and direction
 	const currentScroll = window.pageYOffset;
-	scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
-
-	scrollMarks.forEach((mark) => {
-		const markDirection = mark.direction;
-		// 1st check: element is visible and direction matches (or not defined)
-		if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
-			const triggerPoint = mark.triggerPoint;
-			// 2nd check: element actually crossed the mark (below -> above or above -> below)
-			if ((previousScroll < triggerPoint) === (triggerPoint <= currentScroll)) {
-				// mark should be triggered
-				queue.push(mark);
+	if (active) {
+		const queue = [];
+		// get scroll position and direction
+		scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
+		
+		scrollMarks.forEach((mark) => {
+			const markDirection = mark.direction;
+			// 1st check: element is visible and direction matches (or not defined)
+			if (mark.element.offsetParent !== null && directionMatches(markDirection)) {
+				const triggerPoint = mark.triggerPoint;
+				// 2nd check: element actually crossed the mark (below -> above or above -> below)
+				if ((previousScroll < triggerPoint) === (triggerPoint <= currentScroll)) {
+					// mark should be triggered
+					queue.push(mark);
+				}
 			}
+		});
+		// trigger affected marks
+		if (queue.length) {
+			triggerQueue(queue);
 		}
-	});
-	// trigger affected marks
-	if (queue.length) {
-		triggerQueue(queue);
 	}
 	// prepare for next run
 	previousScroll = currentScroll;
@@ -518,9 +510,8 @@ function getSetConfig(params) {
 	// set
 	Object.keys(params).forEach((key) => setOption(key, params[key]));
 
-	if (clock) {
-		resetTicks();
-	}
+	scrollTick = 1;
+	resizeTick = 1;
 }
 
 /**
@@ -540,26 +531,6 @@ function setOption(key, value) {
 	} else {
 		config[key] = value;
 	}
-}
-
-/**
- * (Re)set the initial state
- */
-function setInitialState() {
-	clock = 0;
-	previousScroll = 0;
-	previousHeight = document.body.scrollHeight;
-	scrolled = false;
-	resized = false;
-	resetTicks();
-}
-
-/**
- * Reset ticks
- */
-function resetTicks() {
-	scrollTick = 1;
-	resizeTick = 1;
 }
 
 export default { add, remove, start, stop, refresh, config: getSetConfig };
