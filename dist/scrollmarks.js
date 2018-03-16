@@ -288,22 +288,7 @@
 		if (!helperElement) {
 			helperElement = document.createElement('div');
 			helperElement.className = 'scrollmarks-helper';
-			var properties = {
-				background: '#67CF93',
-				borderTop: '2px solid',
-				color: '#333',
-				font: '14px monospace',
-				left: '0',
-				minHeight: '20px',
-				padding: '0 3px',
-				position: 'absolute',
-				width: '100%',
-				zIndex: 9999
-			};
-
-			Object.keys(properties).forEach(function (property) {
-				return helperElement.style[property] = properties[property];
-			});
+			helperElement.style.cssText = 'background:#67CF93;border-top:2px solid;color:#333;font:14px monospace;left:0;min-height:20px;padding:0 3px;position:absolute;width:100%;z-index:9999;';
 
 			mark.helper = helperElement;
 			document.body.appendChild(helperElement);

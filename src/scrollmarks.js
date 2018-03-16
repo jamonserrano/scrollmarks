@@ -104,7 +104,7 @@ function add(mark) {
 	}
 
 	calculateTriggerPoint(mark);
-	
+
 	const key = index++;
 	mark.key = key;
 	scrollMarks.set(key, mark);
@@ -214,7 +214,7 @@ function checkMarks() {
 		const queue = [];
 		// get scroll position and direction
 		scrollDirection = previousScroll < currentScroll ? 'down' : 'up';
-		
+
 		scrollMarks.forEach((mark) => {
 			const markDirection = mark.direction;
 			// 1st check: element is visible and direction matches (or not defined)
@@ -254,7 +254,7 @@ function triggerQueue(queue) {
 function trigger(mark) {
 	const once = mark.once;
 	mark.callback(scrollDirection, mark);
-	
+
 	if (once) {
 		remove(mark.key);
 	}
@@ -310,7 +310,7 @@ function calculateTriggerPoint(mark) {
 	}
 
 	mark.triggerPoint = window.pageYOffset + mark.element.getBoundingClientRect().top - offsetValue;
-	
+
 	if (mark.debug) {
 		setHelperElement(mark);
 	}
@@ -356,20 +356,7 @@ function setHelperElement(mark) {
 	if (!helperElement) {
 		helperElement = document.createElement('div');
 		helperElement.className = 'scrollmarks-helper';
-		const properties = {
-			background: '#67CF93',
-			borderTop: '2px solid',
-			color: '#333',
-			font: '14px monospace',
-			left: '0',
-			minHeight: '20px',
-			padding: '0 3px',
-			position: 'absolute',
-			width: '100%',
-			zIndex: 9999
-		};
-
-		Object.keys(properties).forEach((property) => helperElement.style[property] = properties[property]);
+		helperElement.style.cssText = 'background:#67CF93;border-top:2px solid;color:#333;font:14px monospace;left:0;min-height:20px;padding:0 3px;position:absolute;width:100%;z-index:9999;';
 
 		mark.helper = helperElement;
 		document.body.appendChild(helperElement);
